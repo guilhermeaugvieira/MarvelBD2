@@ -11,10 +11,10 @@ export const AppDataSource = new DataSource({
     synchronize: true,
     logging: false,
     entities: [
-        "entity/**/*.{ts, js}"
+        "src/entity/**/*.{ts, js}"
     ],
     migrations: [
-        "migration/**/*.{ts, js}"
+        "src/migration/**/*.{ts, js}"
     ],
     subscribers: [],
     entityPrefix: 'tbl__',
