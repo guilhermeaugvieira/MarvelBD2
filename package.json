@@ -15,7 +15,7 @@
       "typeorm": "0.3.6"
    },
    "scripts": {
-      "start": "ts-node src/index.ts",
+      "start": "ts-node-dev --inspect -- src/index.ts",
       "typeorm": "typeorm-ts-node-commonjs"
    }
 }

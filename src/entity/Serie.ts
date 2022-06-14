@@ -1,7 +1,7 @@
 import { Entity, Column, OneToMany} from "typeorm"
 import { Character_Series } from "./Character_Series"
 
-@Entity({name: 'tbl__serie', schema: 'marvel'})
+@Entity({name: 'serie', schema: 'marvel'})
 export class Serie{
   
   @Column({primary: true})

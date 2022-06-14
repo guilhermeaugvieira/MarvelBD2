@@ -1,6 +1,5 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
-import { User } from "./entity/User"
 
 export const AppDataSource = new DataSource({
     type: "postgres",
@@ -11,7 +10,13 @@ export const AppDataSource = new DataSource({
     database: "marvel",
     synchronize: true,
     logging: false,
-    entities: [User],
-    migrations: [],
+    entities: [
+        "entity/**/*.{ts, js}"
+    ],
+    migrations: [
+        "migration/**/*.{ts, js}"
+    ],
     subscribers: [],
+    entityPrefix: 'tbl__',
+    applicationName: 'MarvelAPI'
 })

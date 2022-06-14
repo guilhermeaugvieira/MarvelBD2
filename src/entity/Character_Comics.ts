@@ -2,7 +2,7 @@ import { Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm"
 import { Character } from "./Character"
 import { Comic } from "./Comic"
 
-@Entity({name: 'tbl__character_comics', schema: 'marvel'})
+@Entity({name: 'character_comics', schema: 'marvel'})
 export class Character_Comics{
 
   @PrimaryGeneratedColumn()

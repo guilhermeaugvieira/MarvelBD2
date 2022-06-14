@@ -7,7 +7,7 @@ import { Character_Stories } from "./Character_Stories"
 import { Character_Events } from "./Character_Events"
 import { Character_Series } from "./Character_Series"
 
-@Entity({name: 'tbl__character', schema: 'marvel'})
+@Entity({name: 'character', schema: 'marvel'})
 export class Character {
 
     @Column({primary: true})

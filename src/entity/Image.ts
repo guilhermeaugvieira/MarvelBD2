@@ -1,6 +1,6 @@
 import { Entity, Column} from "typeorm"
 
-@Entity({name: 'tbl__image', schema: 'marvel'})
+@Entity({name: 'image', schema: 'marvel'})
 export class Image{
   
   @Column({primary: true})

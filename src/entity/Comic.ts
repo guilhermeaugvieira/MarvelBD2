@@ -1,7 +1,7 @@
 import { Entity, Column, OneToMany } from "typeorm"
 import { Character_Comics } from "./Character_Comics"
 
-@Entity({name:'tbl__comic', schema: 'marvel'})
+@Entity({name:'comic', schema: 'marvel'})
 export class Comic{
   
   @Column({nullable: true})

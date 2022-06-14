@@ -1,7 +1,7 @@
 import { Entity, Column, ManyToOne, OneToMany} from "typeorm"
 import { Character } from "./Character"
 
-@Entity({name: 'tbl__url', schema: 'marvel'})
+@Entity({name: 'url', schema: 'marvel'})
 export class Url{
   
   @Column({
