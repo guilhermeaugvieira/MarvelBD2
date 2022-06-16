@@ -5,9 +5,12 @@ import { Character_Events } from "./Character_Events"
 export class Event{
   
   @Column({primary: true})
+  id: number
+  
+  @Column({nullable: false})
   name: string
 
-  @Column({nullable: true})
+  @Column({nullable: false})
   resourceUri: string
 
   @OneToMany(() => Character_Events, character_event => character_event.character)

@@ -8,9 +8,15 @@ export class Character_Events{
   @PrimaryGeneratedColumn()
   id: number
 
-  @ManyToOne(() => Character, character => character.events)
+  @ManyToOne(() => Character, character => character.events,{
+    onDelete: "NO ACTION",
+    onUpdate: "CASCADE"
+  })
   character: Character
 
-  @ManyToOne(() => Event, event => event.characters)
+  @ManyToOne(() => Event, event => event.characters,{
+    onDelete: "NO ACTION",
+    onUpdate: "CASCADE"
+  })
   event: Event
 }

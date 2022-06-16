@@ -5,9 +5,12 @@ import { Character_Series } from "./Character_Series"
 export class Serie{
   
   @Column({primary: true})
+  id: number
+  
+  @Column({nullable: false})
   name: string
 
-  @Column({nullable: true})
+  @Column({nullable: false})
   resourceUri: string
 
   @OneToMany(() => Character_Series, character_series => character_series.serie)

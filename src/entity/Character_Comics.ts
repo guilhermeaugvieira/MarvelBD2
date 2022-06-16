@@ -8,9 +8,15 @@ export class Character_Comics{
   @PrimaryGeneratedColumn()
   id: number
 
-  @ManyToOne(() => Character, character => character.comics)
+  @ManyToOne(() => Character, character => character.comics, {
+    onDelete: "NO ACTION",
+    onUpdate: "CASCADE"
+  })
   character: Character
 
-  @ManyToOne(() => Comic, comic => comic.characters)
+  @ManyToOne(() => Comic, comic => comic.characters, {
+    onDelete: "NO ACTION",
+    onUpdate: "CASCADE"
+  })
   comic: Comic
 }

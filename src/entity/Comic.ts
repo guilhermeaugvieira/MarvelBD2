@@ -4,10 +4,13 @@ import { Character_Comics } from "./Character_Comics"
 @Entity({name:'comic', schema: 'marvel'})
 export class Comic{
   
-  @Column({nullable: true})
+  @Column({primary: true})
+  id: number
+  
+  @Column({nullable: false})
   reourceURI: string
 
-  @Column({primary: true})
+  @Column({nullable: false})
   name: string
 
   @OneToMany(() => Character_Comics, character_comics => character_comics.comic)

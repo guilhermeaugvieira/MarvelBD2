@@ -1,17 +1,21 @@
-import { Entity, Column, ManyToOne, OneToMany} from "typeorm"
+import { Entity, Column, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm"
 import { Character } from "./Character"
 
 @Entity({name: 'url', schema: 'marvel'})
 export class Url{
   
-  @Column({
-    nullable: true,
-  })
+  @PrimaryGeneratedColumn()
+  id: number
+  
+  @Column({nullable: false})
   type: string
 
-  @Column({primary: true})
+  @Column({nullable: false})
   url: string
 
-  @ManyToOne(() => Character, character => character.urls)
+  @ManyToOne(() => Character, character => character.urls,{
+    onDelete: "NO ACTION",
+    onUpdate: "CASCADE"
+  })
   character: Character
 }

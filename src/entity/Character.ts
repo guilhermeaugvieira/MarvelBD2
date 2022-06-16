@@ -13,22 +13,25 @@ export class Character {
     @Column({primary: true})
     id: number
 
-    @Column({nullable: true})
+    @Column({nullable: false})
     name: string
 
     @Column({nullable: true})
     description: string
 
-    @Column({nullable: true})
+    @Column({nullable: false})
     modified: Date
 
-    @Column({nullable: true})
+    @Column({nullable: false})
     resourceURI: string
 
     @OneToMany(() => Url, url => url.character)
     urls: Url[]
 
-    @OneToOne(() => Image)
+    @OneToOne(() => Image, {
+        onDelete: "NO ACTION",
+        onUpdate: "CASCADE"
+      })
     @JoinColumn()
     thumbnail: Image
 
