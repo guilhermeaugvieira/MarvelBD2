@@ -4,8 +4,8 @@ import { Character } from "./Character"
 @Entity({name: 'url', schema: 'marvel'})
 export class Url{
   
-  @PrimaryGeneratedColumn()
-  id: number
+  @Column({primary: true})
+  id: string
   
   @Column({nullable: false})
   type: string

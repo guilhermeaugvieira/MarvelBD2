@@ -1,18 +1,19 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class Initial1655409565549 implements MigrationInterface {
-    name = 'Initial1655409565549'
+export class Initial1655414615923 implements MigrationInterface {
+    name = 'Initial1655414615923'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`CREATE TABLE "marvel"."tbl__url" ("id" SERIAL NOT NULL, "type" character varying NOT NULL, "url" character varying NOT NULL, "characterId" integer, CONSTRAINT "PK_8472f6a5d5f14670614bf4da30f" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TABLE "marvel"."tbl__image" ("id" integer NOT NULL, "path" character varying NOT NULL, "extension" character varying NOT NULL, CONSTRAINT "PK_2588cef1f4871d5c1e44c77fb33" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE SCHEMA IF NOT EXISTS marvel`);
+        await queryRunner.query(`CREATE TABLE "marvel"."tbl__url" ("id" character varying NOT NULL, "type" character varying NOT NULL, "url" character varying NOT NULL, "characterId" integer, CONSTRAINT "PK_8472f6a5d5f14670614bf4da30f" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "marvel"."tbl__image" ("id" character varying NOT NULL, "path" character varying NOT NULL, "extension" character varying NOT NULL, CONSTRAINT "PK_2588cef1f4871d5c1e44c77fb33" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "marvel"."tbl__comic" ("id" integer NOT NULL, "reourceURI" character varying NOT NULL, "name" character varying NOT NULL, CONSTRAINT "PK_a05e0dc331eac0cf59413ebda00" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "marvel"."tbl__character_comics" ("id" SERIAL NOT NULL, "characterId" integer, "comicId" integer, CONSTRAINT "PK_356eb45373268cf97050a7e1454" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "marvel"."tbl__story" ("id" integer NOT NULL, "name" character varying NOT NULL, "type" character varying NOT NULL, "resourceUri" character varying NOT NULL, CONSTRAINT "PK_2dbb76681b5f1879d4e6d285f1e" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "marvel"."tbl__character_stories" ("id" SERIAL NOT NULL, "characterId" integer, "storyId" integer, CONSTRAINT "PK_ae02522f7664e2e84642b9f7817" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "marvel"."tbl__serie" ("id" integer NOT NULL, "name" character varying NOT NULL, "resourceUri" character varying NOT NULL, CONSTRAINT "PK_e7c45f329706fd27cd18ca6bd12" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "marvel"."tbl__character_series" ("id" SERIAL NOT NULL, "characterId" integer, "serieId" integer, CONSTRAINT "PK_079af5ce94d7b893296376bde39" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TABLE "marvel"."tbl__character" ("id" integer NOT NULL, "name" character varying NOT NULL, "description" character varying, "modified" TIMESTAMP NOT NULL, "resourceURI" character varying NOT NULL, "thumbnailId" integer, CONSTRAINT "REL_d290f2b8e3ea97557a47555573" UNIQUE ("thumbnailId"), CONSTRAINT "PK_272ecbbe9daa8963005dc58077a" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "marvel"."tbl__character" ("id" integer NOT NULL, "name" character varying NOT NULL, "description" character varying, "modified" TIMESTAMP NOT NULL, "resourceURI" character varying NOT NULL, "thumbnailId" character varying, CONSTRAINT "REL_d290f2b8e3ea97557a47555573" UNIQUE ("thumbnailId"), CONSTRAINT "PK_272ecbbe9daa8963005dc58077a" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "marvel"."tbl__event" ("id" integer NOT NULL, "name" character varying NOT NULL, "resourceUri" character varying NOT NULL, CONSTRAINT "PK_a47934ef96d0df635a11dbf6d1b" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "marvel"."tbl__character_events" ("id" SERIAL NOT NULL, "characterId" integer, "eventId" integer, CONSTRAINT "PK_972a8f76833ff8e637913b1518f" PRIMARY KEY ("id"))`);
         await queryRunner.query(`ALTER TABLE "marvel"."tbl__url" ADD CONSTRAINT "FK_bc57225eb25fcf1d4ecf3fc5a6f" FOREIGN KEY ("characterId") REFERENCES "marvel"."tbl__character"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
@@ -49,6 +50,7 @@ export class Initial1655409565549 implements MigrationInterface {
         await queryRunner.query(`DROP TABLE "marvel"."tbl__comic"`);
         await queryRunner.query(`DROP TABLE "marvel"."tbl__image"`);
         await queryRunner.query(`DROP TABLE "marvel"."tbl__url"`);
+        await queryRunner.query(`DROP SCHEMA marvel`);
     }
 
 }

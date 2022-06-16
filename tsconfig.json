@@ -12,6 +12,7 @@
       "experimentalDecorators": true,
       "sourceMap": true,
       "strictPropertyInitialization": false,
-      "strictNullChecks": false
+      "strictNullChecks": false,
+      "esModuleInterop": true
    }
 }

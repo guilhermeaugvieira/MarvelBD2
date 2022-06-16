@@ -19,4 +19,4 @@ export const AppDataSource = new DataSource({
     subscribers: [],
     entityPrefix: 'tbl__',
     applicationName: 'MarvelAPI'
-})
+});

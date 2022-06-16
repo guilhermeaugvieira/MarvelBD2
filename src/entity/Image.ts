@@ -4,7 +4,7 @@ import { Entity, Column} from "typeorm"
 export class Image{
   
   @Column({primary: true})
-  id: number
+  id: string
   
   @Column({nullable: false})
   path: string
