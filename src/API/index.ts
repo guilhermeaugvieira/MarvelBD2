@@ -1,11 +1,11 @@
 import "reflect-metadata";
-import { servidor } from './servidor';
+import '../Infraestrutura/Shared/Container/Dependencias';
+import { servidor } from './Servidor';
 import dotenv from 'dotenv';
-import './shared/container/dependencias';
-import { AppDataSource } from './data-source';
+import { AppDataSource } from '../Dados/Data-Source';
 
 dotenv.config({
-  path: 'src/environment/.env',
+  path: 'src/API/Environment/.env',
 });
 
 AppDataSource.initialize();

@@ -1,5 +1,5 @@
 import express, {Request, Response} from 'express';
-import { rotas } from './config.routes';
+import { rotas } from './Routes/Config.Routes';
 import cors from 'cors';
 
 const servidor = express();

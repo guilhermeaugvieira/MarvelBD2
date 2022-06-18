@@ -1,12 +1,12 @@
-import { Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm"
+import { Entity, ManyToOne, Column} from "typeorm"
 import { Character } from "./Character"
 import { Comic } from "./Comic"
 
 @Entity({name: 'character_comics', schema: 'marvel'})
 export class Character_Comics{
 
-  @PrimaryGeneratedColumn()
-  id: number
+  @Column({primary: true})
+  id: string
 
   @ManyToOne(() => Character, character => character.comics, {
     onDelete: "NO ACTION",

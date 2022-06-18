@@ -1,10 +1,11 @@
 import { celebrate, errors, Joi, Segments } from "celebrate";
 import { Router } from "express";
-import { CharactersController } from '../useCases/controller/Characters.Controller';
+import { container } from "tsyringe";
+import { CharactersController } from "../Controllers/Characters.Controller";
 
 const rotasCharacters = Router();
 
-const charactersController = new CharactersController();
+const charactersController = container.resolve(CharactersController);
 
 rotasCharacters.post("/:page", celebrate({
   [Segments.PARAMS]: Joi.object().keys({
