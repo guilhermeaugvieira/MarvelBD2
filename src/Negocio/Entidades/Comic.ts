@@ -8,7 +8,7 @@ export class Comic{
   id: number
   
   @Column({nullable: false})
-  reourceURI: string
+  resourceUri: string
 
   @Column({nullable: false})
   name: string

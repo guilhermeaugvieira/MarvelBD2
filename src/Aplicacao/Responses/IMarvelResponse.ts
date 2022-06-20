@@ -1,82 +1,82 @@
-interface ISeriesSummary{
-  resourceURI: string,
-  name: number,
-}
-
-interface ISeriesList{
-  available: string,
-  returned: number,
-  collectionURI: string,
-  items: ISeriesSummary[]
-}
-
-interface IEventSummary{
-  resourceURI: string,
-  name: number,
-}
-
-interface IEventList{
-  available: string,
-  returned: number,
-  collectionURI: string,
-  items: IEventSummary[]
-}
-
-interface IStorySummary{
-  resourceURI: string,
-  name: number,
-  type: string
-}
-
-interface IStoryList{
-  available: string,
-  returned: number,
-  collectionURI: string,
-  items: IStorySummary
-}
-
-interface IComicSummary{
+interface IMarvelSeriesSummary{
   resourceURI: string,
   name: string,
 }
 
-interface IComicList{
+interface IMarvelSeriesList{
+  available: string,
+  returned: number,
+  collectionURI: string,
+  items: IMarvelSeriesSummary[]
+}
+
+interface IMarvelEventSummary{
+  resourceURI: string,
+  name: string,
+}
+
+interface IMarvelEventList{
+  available: string,
+  returned: number,
+  collectionURI: string,
+  items: IMarvelEventSummary[]
+}
+
+interface IMarvelStorySummary{
+  resourceURI: string,
+  name: string,
+  type: string
+}
+
+interface IMarvelStoryList{
+  available: string,
+  returned: number,
+  collectionURI: string,
+  items: IMarvelStorySummary[]
+}
+
+interface IMarvelComicSummary{
+  resourceURI: string,
+  name: string,
+}
+
+interface IMarvelComicList{
   available: number,
   returned: number,
   collectionURI: string,
-  items: IComicSummary[]
+  items: IMarvelComicSummary[]
 }
 
-interface IImage{
+interface IMarvelImage{
   path: string,
   extension: string
 }
 
-interface IURL{
+interface IMarvelURL{
   type: string,
   url: string,
 }
 
-interface ICharacter{
+interface IMarvelCharacter{
   id: number,
   name: string,
   description?: string,
   modified: Date,
   resourceURI: string,
-  urls: IURL[],
-  thumbnail: IImage,
-  comics: IComicList,
-  stories: IStoryList,
-  events: IEventList,
-  series: ISeriesList
+  urls: IMarvelURL[],
+  thumbnail: IMarvelImage,
+  comics: IMarvelComicList,
+  stories: IMarvelStoryList,
+  events: IMarvelEventList,
+  series: IMarvelSeriesList
 }
 
-interface ICharacterDataContainer{
+interface IMarvelCharacterDataContainer{
   offset: number,
   limit: number,
   total: number,
   count: number,
-  results: ICharacter[]
+  results: IMarvelCharacter[]
 }
 
 interface IMarvelResponse{
@@ -85,22 +85,22 @@ interface IMarvelResponse{
   copiryght: string,
   attributionText: string,
   attributionHTML: string,
-  data:ICharacterDataContainer,
+  data:IMarvelCharacterDataContainer,
   etag: string
 }
 
 export { 
   IMarvelResponse,
-  ICharacterDataContainer,
-  ICharacter,
-  IURL,
-  IImage,
-  IComicList,
-  IComicSummary,
-  IStoryList,
-  IStorySummary,
-  IEventList,
-  IEventSummary,
-  ISeriesList,
-  ISeriesSummary
+  IMarvelCharacterDataContainer,
+  IMarvelCharacter,
+  IMarvelURL,
+  IMarvelImage,
+  IMarvelComicList,
+  IMarvelComicSummary,
+  IMarvelStoryList,
+  IMarvelStorySummary,
+  IMarvelEventList,
+  IMarvelEventSummary,
+  IMarvelSeriesList,
+  IMarvelSeriesSummary
 }

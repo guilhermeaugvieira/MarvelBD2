@@ -29,9 +29,9 @@ export class Character {
     urls: Url[]
 
     @OneToOne(() => Image, {
-        onDelete: "NO ACTION",
-        onUpdate: "CASCADE"
-      })
+      onDelete: "NO ACTION",
+      onUpdate: "CASCADE",
+    })
     @JoinColumn()
     thumbnail: Image
 

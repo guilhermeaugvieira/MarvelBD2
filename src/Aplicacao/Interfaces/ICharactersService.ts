@@ -1,5 +1,5 @@
 interface ICharactersService{
-  aplicarCarga(page: number);
+  aplicarCarga(): Promise<Object>;
 }
 
 export { ICharactersService }

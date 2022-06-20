@@ -7,11 +7,19 @@ const rotasCharacters = Router();
 
 const charactersController = container.resolve(CharactersController);
 
-rotasCharacters.post("/:page", celebrate({
-  [Segments.PARAMS]: Joi.object().keys({
-    page: Joi.number().required().min(1).max(16),
-  }),
-}), charactersController.carga);
+rotasCharacters.post("/characters",
+  /*
+    #swagger.tags = ['Characters']
+    #swagger.summary = 'Aplica a carga no banco de dados'
+    #swagger.description = 'Retorna o status de aplicação da carga'
+    #swagger.responses[200] = {
+      description: 'Ok',
+      schema: {
+        $ref: '#/definitions/RespostaCarga'
+      }
+    }
+  */
+charactersController.carga);
 
 rotasCharacters.use(errors());
 

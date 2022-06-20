@@ -7,7 +7,7 @@ class CharactersController{
   constructor(@inject('CharactersService') private _charactersService?: ICharactersService){}
   
   carga = async (requisicao: Request, resposta: Response): Promise<Response> => {  
-    return resposta.json(await this._charactersService.aplicarCarga(+requisicao.params.page));
+    return resposta.json(await this._charactersService.aplicarCarga());
   }
 }
 

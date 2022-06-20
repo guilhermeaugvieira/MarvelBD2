@@ -1,8 +1,10 @@
 import express, {Request, Response} from 'express';
-import { rotas } from './Routes/Config.Routes';
+import { rotas } from './Config.Routes';
 import cors from 'cors';
+import { SwaggerOptions } from 'swagger-ui-express'
 
 const servidor = express();
+const swaggerFile = require('./Swagger/swaggerDocs.json');
 
 servidor.use(express.json());
 servidor.use(express.urlencoded({extended: true}));
