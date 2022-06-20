@@ -1,0 +1,64 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "API Sistema de Empréstimos",
+    "description": "Documentação da API do Sistema de Empréstimos"
+  },
+  "host": "localhost:3000",
+  "basePath": "/api",
+  "tags": [
+    {
+      "name": "Characters",
+      "description": "Gerencia os personagens"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "securityDefinitions": {
+    "apiKeyAuth": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "authorization",
+      "description": "Insira o token seguido de 'Bearer '"
+    }
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/characters": {
+      "post": {
+        "tags": [
+          "Characters"
+        ],
+        "summary": "Aplica a carga no banco de dados",
+        "description": "Retorna o status de aplicação da carga",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "schema": {
+              "$ref": "#/definitions/RespostaCarga"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "RespostaCarga": {
+      "type": "object",
+      "properties": {
+        "Status": {
+          "type": "string",
+          "example": "Carga feita com sucesso"
+        }
+      }
+    }
+  }
+}
