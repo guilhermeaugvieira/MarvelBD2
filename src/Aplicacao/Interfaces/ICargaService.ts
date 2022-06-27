@@ -1,5 +1,5 @@
 interface ICargaService{
-  aplicarCarga(): Promise<Object>;
+  aplicarCarga(page: number): Promise<Object>;
 }
 
 export { ICargaService }

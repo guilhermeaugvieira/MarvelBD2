@@ -25,14 +25,14 @@ class CargaService implements ICargaService{
 
   private counter = 0;
   
-  aplicarCarga = async (): Promise<Object> => {
+  aplicarCarga = async (page: number): Promise<Object> => {
+
+    this.counter = 0;
     
-    await AppDataSource.manager.transaction(async (transactionalEntityManager) => {
-      for(let page = 1; page <= 16; page ++){      
-        const personagens = await this.obterDadosPersonagensAPI(page);
-  
-        await this.inserirPersonagens(personagens, transactionalEntityManager);
-      }
+    await AppDataSource.manager.transaction(async (transactionalEntityManager) => {  
+      const personagens = await this.obterDadosPersonagensAPI(page);
+
+      await this.inserirPersonagens(personagens, transactionalEntityManager);
     });
 
     return {
@@ -451,6 +451,7 @@ class CargaService implements ICargaService{
       
       if(serieBaseDeDados){
         serieAdicionada = serieBaseDeDados;
+        
       }else{
         const { data: serieResult} = await this.obterDadosDetalhadosSeriesAPI(idSerie);
         const serieApi = serieResult.results[0];
@@ -562,7 +563,7 @@ class CargaService implements ICargaService{
         else{
           const { data: storyResult} = await this.obterDadosDetalhadosStoriesAPI(+storyItem.resourceURI.split('/')[6]);
           const storyAPI = storyResult.results[0];
-          
+
           storyAdicionada.resourceUri = storyItem.resourceURI;
           storyAdicionada.type = storyItem.type;
           storyAdicionada.id = +storyItem.resourceURI.split('/')[6];
