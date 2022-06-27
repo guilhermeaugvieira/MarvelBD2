@@ -1,9 +1,10 @@
 import { Entity, ManyToOne, Column} from "typeorm"
+import { EntityBase } from "./Base"
 import { Character } from "./Character"
 import { Event } from "./Event"
 
 @Entity({name: 'character_events', schema: 'marvel'})
-export class Character_Events{
+export class Character_Events extends EntityBase{
 
   @Column({primary: true})
   id: string

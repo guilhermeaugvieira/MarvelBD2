@@ -15,8 +15,8 @@ const doc = {
   produces: ['application/json'],
   tags: [
     {
-      name: "Characters",
-      description: "Gerencia os personagens"
+      name: "Carga",
+      description: "Carga online do banco de dados"
     },
   ],
   securityDefinitions: {

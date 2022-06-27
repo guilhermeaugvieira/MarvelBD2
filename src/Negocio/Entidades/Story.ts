@@ -1,20 +1,35 @@
-import { Entity, Column, OneToMany} from "typeorm"
+import { Entity, Column, OneToMany, OneToOne, JoinColumn} from "typeorm"
+import { EntityBase } from "./Base"
 import { Character_Stories } from "./Character_Stories"
+import { Comic } from "./Comic"
 
 @Entity({name: 'story', schema: 'marvel'})
-export class Story{
+export class Story extends EntityBase{
   
   @Column({primary: true})
   id: number
   
   @Column({nullable: false})
-  name: string
-  
-  @Column({nullable: false})
   type: string
 
-  @Column({nullable: false})
+  @Column({nullable: false, name: 'resource_uri'})
   resourceUri: string
+
+  @Column({nullable: false})
+  title: string
+
+  @Column({nullable: true})
+  description?: string
+
+  @Column({nullable: false})
+  modified: Date
+
+  @OneToOne(() => Comic, {
+    onDelete: "NO ACTION",
+    onUpdate: "CASCADE",
+  })
+  @JoinColumn({name: 'original_issue'})
+  originalIssue: Comic
 
   @OneToMany(() => Character_Stories, character_stories => character_stories.story)
   characters: Character_Stories[]

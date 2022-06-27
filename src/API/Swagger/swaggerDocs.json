@@ -9,8 +9,8 @@
   "basePath": "/api",
   "tags": [
     {
-      "name": "Characters",
-      "description": "Gerencia os personagens"
+      "name": "Carga",
+      "description": "Carga online do banco de dados"
     }
   ],
   "schemes": [
@@ -31,13 +31,13 @@
     "application/json"
   ],
   "paths": {
-    "/characters": {
+    "/carga": {
       "post": {
         "tags": [
-          "Characters"
+          "Carga"
         ],
-        "summary": "Aplica a carga no banco de dados",
-        "description": "Retorna o status de aplicação da carga",
+        "summary": "Aplica a carga no banco de dados de todas as entidades associadas",
+        "description": "Retorna o status de aplicação da carga geral",
         "parameters": [],
         "responses": {
           "200": {

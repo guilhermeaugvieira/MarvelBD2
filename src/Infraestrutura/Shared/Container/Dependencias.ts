@@ -1,5 +1,5 @@
 import { container } from 'tsyringe';
-import { ICharactersService } from '../../../Aplicacao/Interfaces/ICharactersService';
-import { CharactersService } from '../../../Aplicacao/Services/Characters.Service';
+import { ICargaService } from '../../../Aplicacao/Interfaces/ICargaService';
+import { CargaService } from '../../../Aplicacao/Services/Carga.Service';
 
-container.register<ICharactersService>('CharactersService', {useValue: new CharactersService()});
+container.register<ICargaService>('CharactersService', {useValue: new CargaService()});

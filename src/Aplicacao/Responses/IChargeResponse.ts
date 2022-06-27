@@ -13,25 +13,21 @@ interface IImage{
 interface IComics{
   id: number
   resourceURI: string
-  name: string
 }
 
 interface IStory{
   id: number
-  name: string
   type: string
   resourceUri: string
 }
 
 interface IEvent{
   id: number
-  name: string
   resourceUri: string
 }
 
 interface ISerie{
   id: number
-  name: string
   resourceUri: string
 }
 
@@ -42,7 +38,7 @@ interface IChargeResponse {
   modified: Date,
   resourceURI: string,
   urls: IURL[],
-  thumbnail: IImage,
+  thumbnail: string,
   comics: IComics[],
   stories: IStory[],
   events: IEvent[],

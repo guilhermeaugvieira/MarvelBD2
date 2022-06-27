@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { rotasCharacters } from './Routes/Characters.routes';
+import { rotasCarga } from './Routes/Carga.routes';
 import { rotaSwagger } from './Routes/Swagger';
 
 const rotas = Router();
 
-rotas.use('/', rotasCharacters);
+rotas.use('/', rotasCarga);
 rotas.use('/', rotaSwagger);
 
 export { rotas };
