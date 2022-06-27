@@ -1,10 +1,9 @@
-import { Entity, Column, OneToMany, OneToOne, JoinColumn} from "typeorm"
-import { EntityBase } from "./Base"
+import { Entity, Column, OneToMany, OneToOne, JoinColumn, CreateDateColumn, UpdateDateColumn} from "typeorm"
 import { Character_Series } from "./Character_Series"
 import { Url } from "./Url"
 
 @Entity({name: 'serie', schema: 'marvel'})
-export class Serie extends EntityBase{
+export class Serie{
   
   @Column({primary: true})
   id: number
@@ -46,4 +45,10 @@ export class Serie extends EntityBase{
   })
   @JoinColumn({name: 'next_serie'})
   nextSerie: Serie
+
+  @CreateDateColumn({nullable: false})
+  created_at?: Date
+
+  @UpdateDateColumn({nullable: false})
+  updated_at?: Date
 }

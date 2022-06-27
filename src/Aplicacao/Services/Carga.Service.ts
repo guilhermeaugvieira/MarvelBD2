@@ -22,6 +22,8 @@ import { Creator } from '../../Negocio/Entidades/Creator';
 
 @scoped(Lifecycle.ResolutionScoped)
 class CargaService implements ICargaService{
+
+  private counter = 0;
   
   aplicarCarga = async (): Promise<Object> => {
     
@@ -133,6 +135,10 @@ class CargaService implements ICargaService{
     
     for(const personagemAtual of personagens.data.results){        
       const personagemInserido = await this.verificarPersonagem(personagemAtual, transactionalEntityManager)
+
+      this.counter += 1;
+
+      console.log('Personagens Adicionados: ', this.counter);
       
       personagensAdicionados.push(personagemInserido);
     }
@@ -266,7 +272,7 @@ class CargaService implements ICargaService{
       quadrinhoAdicionado.isbn = comicAPI.isbn;
       quadrinhoAdicionado.issn = comicAPI.issn;
       quadrinhoAdicionado.issueNumber = comicAPI.issueNumber;
-      quadrinhoAdicionado.modified = comicAPI.modified;
+      quadrinhoAdicionado.modified = comicAPI.modified instanceof Date ? new Date(comicAPI.modified) : new Date();
       quadrinhoAdicionado.pageCount = comicAPI.pageCount;
       quadrinhoAdicionado.title = comicAPI.title;
       quadrinhoAdicionado.upc = comicAPI.upc;
@@ -352,9 +358,9 @@ class CargaService implements ICargaService{
       eventoAdicionado.id = idEvento;
       eventoAdicionado.urls = urlsEvento;
       eventoAdicionado.description = eventAPI.description;
-      eventoAdicionado.end = eventAPI.end;
-      eventoAdicionado.modified = eventAPI.modified;
-      eventoAdicionado.start = eventAPI.start;
+      eventoAdicionado.end = eventAPI.end instanceof Date ? new Date(eventAPI.end) : new Date();
+      eventoAdicionado.modified = eventAPI.modified instanceof Date ? new Date(eventAPI.modified) : new Date();
+      eventoAdicionado.start = eventAPI.start instanceof Date ? new Date(eventAPI.start) : new Date();
       eventoAdicionado.title = eventAPI.title;
 
       await transactionalEntityManager.getRepository(Event).save([eventoAdicionado]);
@@ -438,7 +444,7 @@ class CargaService implements ICargaService{
       serieAdicionada.id = idSerie;
       serieAdicionada.description = serieApi.description;
       serieAdicionada.endYear = serieApi.endYear;
-      serieAdicionada.modified = serieApi.modified;
+      serieAdicionada.modified = serieApi.modified instanceof Date ? new Date(serieApi.modified) : new Date();
       serieAdicionada.startYear = serieApi.startYear;
       serieAdicionada.title = serieApi.title;
       serieAdicionada.urls = urlsSerie;
@@ -533,7 +539,7 @@ class CargaService implements ICargaService{
         storyAdicionada.type = storyItem.type;
         storyAdicionada.id = +storyItem.resourceURI.split('/')[6];
         storyAdicionada.description = storyAPI.description;
-        storyAdicionada.modified = storyAPI.modified;
+        storyAdicionada.modified = storyAPI.modified instanceof Date ? new Date(storyAPI.modified) : new Date();
         storyAdicionada.title = storyAPI.title;
       }
 

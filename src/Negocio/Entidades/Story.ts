@@ -1,10 +1,9 @@
-import { Entity, Column, OneToMany, OneToOne, JoinColumn} from "typeorm"
-import { EntityBase } from "./Base"
+import { Entity, Column, OneToMany, OneToOne, JoinColumn, CreateDateColumn, UpdateDateColumn} from "typeorm"
 import { Character_Stories } from "./Character_Stories"
 import { Comic } from "./Comic"
 
 @Entity({name: 'story', schema: 'marvel'})
-export class Story extends EntityBase{
+export class Story{
   
   @Column({primary: true})
   id: number
@@ -33,4 +32,10 @@ export class Story extends EntityBase{
 
   @OneToMany(() => Character_Stories, character_stories => character_stories.story)
   characters: Character_Stories[]
+
+  @CreateDateColumn({nullable: false})
+  created_at?: Date
+
+  @UpdateDateColumn({nullable: false})
+  updated_at?: Date
 }

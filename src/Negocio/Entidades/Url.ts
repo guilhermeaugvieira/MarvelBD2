@@ -1,12 +1,11 @@
-import { Entity, Column, ManyToOne} from "typeorm"
-import { EntityBase } from "./Base"
+import { Entity, Column, ManyToOne, CreateDateColumn, UpdateDateColumn} from "typeorm"
 import { Character } from "./Character"
 import { Comic } from "./Comic"
 import { Event } from "./Event"
 import { Serie } from "./Serie"
 
 @Entity({name: 'url', schema: 'marvel'})
-export class Url extends EntityBase{
+export class Url{
   
   @Column({primary: true})
   id: string
@@ -40,4 +39,10 @@ export class Url extends EntityBase{
     onUpdate: "CASCADE"
   })
   serie?: Serie
+
+  @CreateDateColumn({nullable: false})
+  created_at?: Date
+
+  @UpdateDateColumn({nullable: false})
+  updated_at?: Date
 }

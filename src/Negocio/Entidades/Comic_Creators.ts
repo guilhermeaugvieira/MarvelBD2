@@ -1,10 +1,9 @@
-import { Column, Entity, ManyToOne } from "typeorm";
-import { EntityBase } from "./Base";
+import { Column, CreateDateColumn, Entity, ManyToOne, UpdateDateColumn } from "typeorm";
 import { Comic } from "./Comic";
 import { Creator } from "./Creator";
 
 @Entity({name: 'comic_creators', schema: 'marvel'})
-export class Comic_Creators extends EntityBase{
+export class Comic_Creators{
   
   @Column({primary: true})
   id: string
@@ -23,4 +22,10 @@ export class Comic_Creators extends EntityBase{
 
   @Column({nullable: false})
   role: string
+
+  @CreateDateColumn({nullable: false})
+  created_at?: Date
+
+  @UpdateDateColumn({nullable: false})
+  updated_at?: Date
 }
