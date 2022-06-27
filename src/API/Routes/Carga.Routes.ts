@@ -7,7 +7,7 @@ const rotasCarga = Router();
 
 const cargaController = container.resolve(CargaController);
 
-rotasCarga.post("/carga/:charactersPage",
+rotasCarga.post("/carga",
   /*
     #swagger.tags = ['Carga']
     #swagger.summary = 'Aplica a carga no banco de dados de todas as entidades associadas'
@@ -20,15 +20,7 @@ rotasCarga.post("/carga/:charactersPage",
     }
   */
 
-  celebrate(
-    {
-      [Segments.PARAMS]: Joi.object().keys(
-        {
-          charactersPage: Joi.number().required().min(1).max(16),
-        }
-      ),
-    }
-  ),cargaController.carga);
+  cargaController.carga);
 
 rotasCarga.use(errors());
 

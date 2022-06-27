@@ -6,7 +6,7 @@ import { EntityManager} from 'typeorm';
 import { AppDataSource } from '../../Dados/Data-Source';
 import { Character } from '../../Negocio/Entidades/Character';
 import { ICargaService } from '../Interfaces/ICargaService';
-import { IMarvelCharacter, IMarvelCharactersResponse, IMarvelComicResponse, IMarvelEventResponse, IMarvelSeriesResponse, IMarvelStoryResponse, IMarvelEventSummary } from '../Responses/IMarvelResponse';
+import { IMarvelCharacter, IMarvelCharactersResponse, IMarvelComicResponse, IMarvelEventResponse, IMarvelSeriesResponse, IMarvelStoryResponse, IMarvelEventSummary, IMarvelComic, IMarvelEvent, IMarvelSeries, IMarvelStory } from '../Responses/IMarvelResponse';
 import { Url } from '../../Negocio/Entidades/Url';
 import { IChargeResponse } from '../Responses/IChargeResponse';
 import { Character_Comics } from '../../Negocio/Entidades/Character_Comics';
@@ -23,21 +23,57 @@ import { Creator } from '../../Negocio/Entidades/Creator';
 @scoped(Lifecycle.ResolutionScoped)
 class CargaService implements ICargaService{
 
-  private counter = 0;
+  private _charactersData = new Array<IMarvelCharacter>();
+  private _comicData = new Array<IMarvelComic>();
+  private _eventData = new  Array<IMarvelEvent>();
+  private _serieData = new Array<IMarvelSeries>();
+  private _storiesData = new Array<IMarvelStory>();
   
-  aplicarCarga = async (page: number): Promise<Object> => {
+  
+  aplicarCarga = async (): Promise<Object> => {
 
-    this.counter = 0;
+    await this.obterDadosGerais();
     
     await AppDataSource.manager.transaction(async (transactionalEntityManager) => {  
-      const personagens = await this.obterDadosPersonagensAPI(page);
-
-      await this.inserirPersonagens(personagens, transactionalEntityManager);
+      await this.inserirPersonagens(transactionalEntityManager);
     });
 
     return {
       status: 'Carga feita com sucesso'
     };
+  }
+
+  private async obterDadosGerais(): Promise<void>{
+    for(let page = 1; page <= 16; page++){
+      const personagensPagina = await this.obterDadosPersonagensAPI(page);
+
+      this._charactersData.push(...personagensPagina.data.results);
+    }
+
+    for(let page = 1; page <= 16; page++){
+      const quadrinhosPagina = await this.obterDadosDetalhadosComicAPI(page);
+
+      this._comicData.push(...quadrinhosPagina.data.results);
+    }
+
+    for(let page = 1; page <= 16; page++){
+      const eventosPagina = await this.obterDadosDetalhadosEventAPI(page);
+
+      this._eventData.push(...eventosPagina.data.results);
+    }
+
+    for(let page = 1; page <= 16; page++){
+      const seriesPagina = await this.obterDadosDetalhadosSeriesAPI(page);
+
+      this._serieData.push(...seriesPagina.data.results);
+    }
+
+    for(let page = 1; page <= 16; page++){
+      const storiesPagina = await this.obterDadosDetalhadosStoriesAPI(page);
+
+      this._storiesData.push(...storiesPagina.data.results);
+    }
+
   }
 
   private async obterDadosPersonagensAPI(page: number) : Promise<IMarvelCharactersResponse>{
@@ -58,8 +94,8 @@ class CargaService implements ICargaService{
     return personagens
   }
 
-  private async obterDadosDetalhadosComicAPI(id: number): Promise<IMarvelComicResponse>{
-    let url = `comics/${id}`
+  private async obterDadosDetalhadosComicAPI(page: number): Promise<IMarvelComicResponse>{
+    let url = `comics?limit=100&offset=${(page - 1) * 100}`
 
     const timeStamp = new Date().getTime();
     const hash = md5(`${timeStamp}${process.env.CHAVE_PRIVADA}${process.env.CHAVE_PUBLICA}`);
@@ -76,8 +112,8 @@ class CargaService implements ICargaService{
     return comic;
   }
 
-  private async obterDadosDetalhadosEventAPI(id: number): Promise<IMarvelEventResponse>{
-    let url = `events/${id}`
+  private async obterDadosDetalhadosEventAPI(page: number): Promise<IMarvelEventResponse>{
+    let url = `events?limit=100&offset=${(page - 1) * 100}`
 
     const timeStamp = new Date().getTime();
     const hash = md5(`${timeStamp}${process.env.CHAVE_PRIVADA}${process.env.CHAVE_PUBLICA}`);
@@ -94,8 +130,8 @@ class CargaService implements ICargaService{
     return event;
   }
 
-  private async obterDadosDetalhadosSeriesAPI(id: number): Promise<IMarvelSeriesResponse>{
-    let url = `series/${id}`
+  private async obterDadosDetalhadosSeriesAPI(page: number): Promise<IMarvelSeriesResponse>{
+    let url = `series?limit=100&offset=${(page - 1) * 100}`
 
     const timeStamp = new Date().getTime();
     const hash = md5(`${timeStamp}${process.env.CHAVE_PRIVADA}${process.env.CHAVE_PUBLICA}`);
@@ -112,8 +148,8 @@ class CargaService implements ICargaService{
     return serie;
   }
 
-  private async obterDadosDetalhadosStoriesAPI(id: number): Promise<IMarvelStoryResponse>{
-    let url = `stories/${id}`
+  private async obterDadosDetalhadosStoriesAPI(page: number): Promise<IMarvelStoryResponse>{
+    let url = `stories?limit=100&offset=${(page - 1) * 100}`
 
     const timeStamp = new Date().getTime();
     const hash = md5(`${timeStamp}${process.env.CHAVE_PRIVADA}${process.env.CHAVE_PUBLICA}`);
@@ -130,15 +166,11 @@ class CargaService implements ICargaService{
     return story;
   }
 
-  private async inserirPersonagens(personagens: IMarvelCharactersResponse, transactionalEntityManager: EntityManager):Promise<Character[]>{   
+  private async inserirPersonagens(transactionalEntityManager: EntityManager):Promise<Character[]>{  
     let personagensAdicionados: Array<Character> = new Array<Character>();
     
-    for(const personagemAtual of personagens.data.results){        
+    for(const personagemAtual of this._charactersData){        
       const personagemInserido = await this.verificarPersonagem(personagemAtual, transactionalEntityManager)
-
-      this.counter += 1;
-
-      console.log('Personagens Adicionados: ', this.counter);
       
       personagensAdicionados.push(personagemInserido);
     }
@@ -194,8 +226,10 @@ class CargaService implements ICargaService{
     let criadoresQuadrinho = new Array<Comic_Creators>();
 
     try{
-      const {data: comicResult} = await this.obterDadosDetalhadosComicAPI(comicId);
-      const comicAPI = comicResult.results[0];
+      const comicAPI = this._comicData.find(comic => comic.id === comicId);
+
+      if(!comicAPI)
+        return [];
 
       const quadrinho = await transactionalEntityManager.getRepository(Comic).findOne({where: {id: comicId}});
 
@@ -245,56 +279,54 @@ class CargaService implements ICargaService{
 
   private async inserirQuadrinho(idComic: number, transactionalEntityManager: EntityManager): Promise<Comic>{
     let quadrinhoAdicionado = new Comic()
+  
+    let quadrinhoBaseDeDados = await transactionalEntityManager.getRepository(Comic)
+    .findOne({where: {
+      id: idComic
+    }});
     
-    try{  
-      let quadrinhoBaseDeDados = await transactionalEntityManager.getRepository(Comic)
-      .findOne({where: {
-        id: idComic
-      }});
+    if(quadrinhoBaseDeDados){
+      quadrinhoAdicionado = quadrinhoBaseDeDados;
+    }
+    else{
+      const comicAPI = this._comicData.find(comic => comic.id === idComic);
+
+      if(!comicAPI)
+        return null;
+
+      const urlsQuadrinho: Array<Url> = comicAPI.urls.map(url => ({
+        id: uuidv4(),
+        type: url.type,
+        url: url.url
+      }));
+
+      await transactionalEntityManager.getRepository(Url).save(urlsQuadrinho);
       
-      if(quadrinhoBaseDeDados){
-        quadrinhoAdicionado = quadrinhoBaseDeDados;
-      }
-      else{
-        const {data: comicResult} = await this.obterDadosDetalhadosComicAPI(idComic);
-        const comicAPI = comicResult.results[0];
+      quadrinhoAdicionado.resourceUri = comicAPI.resourceURI;
+      quadrinhoAdicionado.id = idComic;
+      quadrinhoAdicionado.description = comicAPI.description;
+      quadrinhoAdicionado.diamondCode = comicAPI.diamondCode;
+      quadrinhoAdicionado.digitalId = comicAPI.digitalId;
+      quadrinhoAdicionado.ean = comicAPI.ean;
+      quadrinhoAdicionado.format = comicAPI.format;
+      quadrinhoAdicionado.isbn = comicAPI.isbn;
+      quadrinhoAdicionado.issn = comicAPI.issn;
+      quadrinhoAdicionado.issueNumber = comicAPI.issueNumber;
+      quadrinhoAdicionado.modified = comicAPI.modified instanceof Date ? new Date(comicAPI.modified) : new Date();
+      quadrinhoAdicionado.pageCount = comicAPI.pageCount;
+      quadrinhoAdicionado.title = comicAPI.title;
+      quadrinhoAdicionado.upc = comicAPI.upc;
+      quadrinhoAdicionado.variantDescription = comicAPI.variantDescription;
+      quadrinhoAdicionado.urls = urlsQuadrinho;
+      quadrinhoAdicionado.thumbnail = `${comicAPI.thumbnail.path}.${comicAPI.thumbnail.extension}`;
+    }
 
-        const urlsQuadrinho: Array<Url> = comicAPI.urls.map(url => ({
-          id: uuidv4(),
-          type: url.type,
-          url: url.url
-        }));
+    if(!quadrinhoBaseDeDados)
+      await transactionalEntityManager.getRepository(Comic).save([quadrinhoAdicionado]);
 
-        await transactionalEntityManager.getRepository(Url).save(urlsQuadrinho);
-        
-        quadrinhoAdicionado.resourceUri = comicAPI.resourceURI;
-        quadrinhoAdicionado.id = idComic;
-        quadrinhoAdicionado.description = comicAPI.description;
-        quadrinhoAdicionado.diamondCode = comicAPI.diamondCode;
-        quadrinhoAdicionado.digitalId = comicAPI.digitalId;
-        quadrinhoAdicionado.ean = comicAPI.ean;
-        quadrinhoAdicionado.format = comicAPI.format;
-        quadrinhoAdicionado.isbn = comicAPI.isbn;
-        quadrinhoAdicionado.issn = comicAPI.issn;
-        quadrinhoAdicionado.issueNumber = comicAPI.issueNumber;
-        quadrinhoAdicionado.modified = comicAPI.modified instanceof Date ? new Date(comicAPI.modified) : new Date();
-        quadrinhoAdicionado.pageCount = comicAPI.pageCount;
-        quadrinhoAdicionado.title = comicAPI.title;
-        quadrinhoAdicionado.upc = comicAPI.upc;
-        quadrinhoAdicionado.variantDescription = comicAPI.variantDescription;
-        quadrinhoAdicionado.urls = urlsQuadrinho;
-        quadrinhoAdicionado.thumbnail = `${comicAPI.thumbnail.path}.${comicAPI.thumbnail.extension}`;
-      }
+    quadrinhoAdicionado.creators = await this.verificarCreators(quadrinhoAdicionado.id, transactionalEntityManager);
 
-      if(!quadrinhoBaseDeDados)
-        await transactionalEntityManager.getRepository(Comic).save([quadrinhoAdicionado]);
-
-      quadrinhoAdicionado.creators = await this.verificarCreators(quadrinhoAdicionado.id, transactionalEntityManager);
-
-      return quadrinhoAdicionado;
-    }catch{
-      return null;
-    }  
+    return quadrinhoAdicionado;
   }
 
   private async verificarRevistas(personagem: IMarvelCharacter, transactionalEntityManager: EntityManager): Promise<Character_Comics[]>{
@@ -345,43 +377,41 @@ class CargaService implements ICargaService{
   private async inserirEvento(idEvento: number, transactionalEntityManager: EntityManager): Promise<Event>{      
     let eventoAdicionado = new Event();
 
-    try{
-      let eventoBaseDeDados = await transactionalEntityManager.getRepository(Event)
-      .findOne({where: {
-        id: idEvento
-      }});
-    
-      if(eventoBaseDeDados){
-        eventoAdicionado = eventoBaseDeDados;
-      }
-      else{
-        const {data: eventResult} = await this.obterDadosDetalhadosEventAPI(idEvento);
-        const eventAPI = eventResult.results[0];
+    let eventoBaseDeDados = await transactionalEntityManager.getRepository(Event)
+    .findOne({where: {
+      id: idEvento
+    }});
+  
+    if(eventoBaseDeDados){
+      eventoAdicionado = eventoBaseDeDados;
+    }
+    else{
+      const eventAPI = this._eventData.find(event => event.id === idEvento);
 
-        const urlsEvento: Array<Url> = eventAPI.urls.map(url => ({
-          id: uuidv4(),
-          type: url.type,
-          url: url.url
-        }));
+      if(!eventAPI)
+        return null;
 
-        await transactionalEntityManager.getRepository(Url).save(urlsEvento);
+      const urlsEvento: Array<Url> = eventAPI.urls.map(url => ({
+        id: uuidv4(),
+        type: url.type,
+        url: url.url
+      }));
 
-        eventoAdicionado.resourceUri = eventAPI.resourceURI;
-        eventoAdicionado.id = idEvento;
-        eventoAdicionado.urls = urlsEvento;
-        eventoAdicionado.description = eventAPI.description;
-        eventoAdicionado.end = eventAPI.end instanceof Date ? new Date(eventAPI.end) : new Date();
-        eventoAdicionado.modified = eventAPI.modified instanceof Date ? new Date(eventAPI.modified) : new Date();
-        eventoAdicionado.start = eventAPI.start instanceof Date ? new Date(eventAPI.start) : new Date();
-        eventoAdicionado.title = eventAPI.title;
+      await transactionalEntityManager.getRepository(Url).save(urlsEvento);
 
-        await transactionalEntityManager.getRepository(Event).save([eventoAdicionado]);
-      }
+      eventoAdicionado.resourceUri = eventAPI.resourceURI;
+      eventoAdicionado.id = idEvento;
+      eventoAdicionado.urls = urlsEvento;
+      eventoAdicionado.description = eventAPI.description;
+      eventoAdicionado.end = eventAPI.end instanceof Date ? new Date(eventAPI.end) : new Date();
+      eventoAdicionado.modified = eventAPI.modified instanceof Date ? new Date(eventAPI.modified) : new Date();
+      eventoAdicionado.start = eventAPI.start instanceof Date ? new Date(eventAPI.start) : new Date();
+      eventoAdicionado.title = eventAPI.title;
 
-      return eventoAdicionado;
-    }catch{
-      return null;
-    }  
+      await transactionalEntityManager.getRepository(Event).save([eventoAdicionado]);
+    }
+
+    return eventoAdicionado; 
   }
 
   private async verificarEventos(personagem: IMarvelCharacter, transactionalEntityManager: EntityManager): Promise<Character_Events[]>{
@@ -398,43 +428,40 @@ class CargaService implements ICargaService{
     });
 
     for(const eventItem of personagem.events.items){           
-      
-      try{
-        const {data: eventResult} = await this.obterDadosDetalhadosEventAPI(+eventItem.resourceURI.split('/')[6]);
-        const eventAPI = eventResult.results[0];
+      const eventAPI = this._eventData.find(event => event.id === +eventItem.resourceURI.split('/')[6]);
 
-        let eventoAdicionado = await this.inserirEvento(+eventAPI.resourceURI.split('/')[6],transactionalEntityManager);
-
-        if(eventAPI.next)
-          eventoAdicionado.nextEvent = await this.inserirEvento(+eventAPI.next.resourceURI.split('/')[6], transactionalEntityManager)
-
-        if(eventAPI.previous)
-          eventoAdicionado.previousEvent = await this.inserirEvento(+eventAPI.previous.resourceURI.split('/')[6], transactionalEntityManager)
-
-        let relacaoEventoAdicionada = new Character_Events();
-        
-        let relacaoEventoBaseDeDados = await transactionalEntityManager.getRepository(Character_Events)
-          .findOne({where: {
-            character: personagemEncontrado,
-            event: eventoAdicionado
-          }});
-
-        if(relacaoEventoBaseDeDados)
-          relacaoEventoAdicionada = relacaoEventoBaseDeDados
-        else{
-          relacaoEventoAdicionada.character = personagemEncontrado;
-          relacaoEventoAdicionada.event = eventoAdicionado;
-          relacaoEventoAdicionada.id = uuidv4();
-        }
-
-        if(!relacaoEventoBaseDeDados){
-          await transactionalEntityManager.getRepository(Character_Events).save([relacaoEventoAdicionada]);
-        }
-
-        characterEvents.push(relacaoEventoAdicionada);
-      }catch{
+      if(!eventAPI)
         continue;
-      }  
+
+      let eventoAdicionado = await this.inserirEvento(+eventAPI.resourceURI.split('/')[6],transactionalEntityManager);
+
+      if(eventAPI.next)
+        eventoAdicionado.nextEvent = await this.inserirEvento(+eventAPI.next.resourceURI.split('/')[6], transactionalEntityManager)
+
+      if(eventAPI.previous)
+        eventoAdicionado.previousEvent = await this.inserirEvento(+eventAPI.previous.resourceURI.split('/')[6], transactionalEntityManager)
+
+      let relacaoEventoAdicionada = new Character_Events();
+      
+      let relacaoEventoBaseDeDados = await transactionalEntityManager.getRepository(Character_Events)
+        .findOne({where: {
+          character: personagemEncontrado,
+          event: eventoAdicionado
+        }});
+
+      if(relacaoEventoBaseDeDados)
+        relacaoEventoAdicionada = relacaoEventoBaseDeDados
+      else{
+        relacaoEventoAdicionada.character = personagemEncontrado;
+        relacaoEventoAdicionada.event = eventoAdicionado;
+        relacaoEventoAdicionada.id = uuidv4();
+      }
+
+      if(!relacaoEventoBaseDeDados){
+        await transactionalEntityManager.getRepository(Character_Events).save([relacaoEventoAdicionada]);
+      }
+
+      characterEvents.push(relacaoEventoAdicionada);
     }
 
     return characterEvents;
@@ -442,42 +469,40 @@ class CargaService implements ICargaService{
 
   private async inserirSerie(idSerie: number, transactionalEntityManager: EntityManager): Promise<Serie>{
     let serieAdicionada = new Serie();
-
-    try{        
-      let serieBaseDeDados = await transactionalEntityManager.getRepository(Serie)
-      .findOne({where: {
-        id: idSerie
-      }});
+    
+    let serieBaseDeDados = await transactionalEntityManager.getRepository(Serie)
+    .findOne({where: {
+      id: idSerie
+    }});
+    
+    if(serieBaseDeDados){
+      serieAdicionada = serieBaseDeDados;
       
-      if(serieBaseDeDados){
-        serieAdicionada = serieBaseDeDados;
-        
-      }else{
-        const { data: serieResult} = await this.obterDadosDetalhadosSeriesAPI(idSerie);
-        const serieApi = serieResult.results[0];
+    }else{
+      const serieApi = this._serieData.find(serie => serie.id === idSerie);
 
-        const urlsSerie: Array<Url> = serieApi.urls.map(url => ({
-          id: uuidv4(),
-          type: url.type,
-          url: url.url
-        }));
-        
-        serieAdicionada.resourceUri = serieApi.resourceURI;
-        serieAdicionada.id = idSerie;
-        serieAdicionada.description = serieApi.description;
-        serieAdicionada.endYear = serieApi.endYear;
-        serieAdicionada.modified = serieApi.modified instanceof Date ? new Date(serieApi.modified) : new Date();
-        serieAdicionada.startYear = serieApi.startYear;
-        serieAdicionada.title = serieApi.title;
-        serieAdicionada.urls = urlsSerie;
-      }
+      if(!serieApi)
+        return null;
 
-      await transactionalEntityManager.getRepository(Serie).save([serieAdicionada]);
+      const urlsSerie: Array<Url> = serieApi.urls.map(url => ({
+        id: uuidv4(),
+        type: url.type,
+        url: url.url
+      }));
+      
+      serieAdicionada.resourceUri = serieApi.resourceURI;
+      serieAdicionada.id = idSerie;
+      serieAdicionada.description = serieApi.description;
+      serieAdicionada.endYear = serieApi.endYear;
+      serieAdicionada.modified = serieApi.modified instanceof Date ? new Date(serieApi.modified) : new Date();
+      serieAdicionada.startYear = serieApi.startYear;
+      serieAdicionada.title = serieApi.title;
+      serieAdicionada.urls = urlsSerie;
+    }
 
-      return serieAdicionada;
-    }catch{
-      return null;
-    }    
+    await transactionalEntityManager.getRepository(Serie).save([serieAdicionada]);
+
+    return serieAdicionada;
   }
 
   private async verificarSeries(personagem: IMarvelCharacter, transactionalEntityManager: EntityManager): Promise<Character_Series[]>{
@@ -494,42 +519,40 @@ class CargaService implements ICargaService{
     });
 
     for(const serieItem of personagem.series.items){      
-      try{
-        const { data: serieResult} = await this.obterDadosDetalhadosSeriesAPI(+serieItem.resourceURI.split('/')[6]);
-        const serieApi = serieResult.results[0];
-  
-        const serieAdicionada = await this.inserirSerie(+serieApi.resourceURI.split('/')[6], transactionalEntityManager);
-  
-        if(serieApi.next)
-          serieAdicionada.nextSerie = await this.inserirSerie(+serieApi.next.resourceURI.split('/')[6], transactionalEntityManager);
-  
-        if(serieApi.previous)
-          serieAdicionada.previousSerie = await this.inserirSerie(+serieApi.previous.resourceURI.split('/')[6], transactionalEntityManager);
-  
-        let relacaoSerieAdicionada = new Character_Series();
-        
-        let relacaoSerieBaseDeDados = await transactionalEntityManager.getRepository(Character_Series)
-          .findOne({where: {
-            character: personagemEncontrado,
-            serie: serieAdicionada
-          }});
-  
-        if(relacaoSerieBaseDeDados)
-          relacaoSerieAdicionada = relacaoSerieBaseDeDados
-        else{
-          relacaoSerieAdicionada.character = personagemEncontrado;
-          relacaoSerieAdicionada.serie = serieAdicionada;
-          relacaoSerieAdicionada.id = uuidv4();
-        }
-  
-        if(!relacaoSerieBaseDeDados){
-          await transactionalEntityManager.getRepository(Character_Series).save([relacaoSerieAdicionada]);
-        }
-  
-        characterSeries.push(relacaoSerieAdicionada);
-      }catch{
+      const serieApi = this._serieData.find(serie => serie.id === +serieItem.resourceURI.split('/')[6]);
+
+      if(!serieApi)
         continue;
+
+      const serieAdicionada = await this.inserirSerie(+serieApi.resourceURI.split('/')[6], transactionalEntityManager);
+
+      if(serieApi.next)
+        serieAdicionada.nextSerie = await this.inserirSerie(+serieApi.next.resourceURI.split('/')[6], transactionalEntityManager);
+
+      if(serieApi.previous)
+        serieAdicionada.previousSerie = await this.inserirSerie(+serieApi.previous.resourceURI.split('/')[6], transactionalEntityManager);
+
+      let relacaoSerieAdicionada = new Character_Series();
+      
+      let relacaoSerieBaseDeDados = await transactionalEntityManager.getRepository(Character_Series)
+        .findOne({where: {
+          character: personagemEncontrado,
+          serie: serieAdicionada
+        }});
+
+      if(relacaoSerieBaseDeDados)
+        relacaoSerieAdicionada = relacaoSerieBaseDeDados
+      else{
+        relacaoSerieAdicionada.character = personagemEncontrado;
+        relacaoSerieAdicionada.serie = serieAdicionada;
+        relacaoSerieAdicionada.id = uuidv4();
       }
+
+      if(!relacaoSerieBaseDeDados){
+        await transactionalEntityManager.getRepository(Character_Series).save([relacaoSerieAdicionada]);
+      }
+
+      characterSeries.push(relacaoSerieAdicionada);
     }
 
     return characterSeries;
@@ -550,56 +573,54 @@ class CargaService implements ICargaService{
 
     for(const storyItem of personagem.stories.items){     
       let storyAdicionada = new Story();
-
-      try{        
-        let storyBaseDeDados = await transactionalEntityManager.getRepository(Story)
-          .findOne({where: {
-            id: +storyItem.resourceURI.split('/')[6]
-          }});
-        
-        if(storyBaseDeDados){
-          storyAdicionada = storyBaseDeDados;
-        }
-        else{
-          const { data: storyResult} = await this.obterDadosDetalhadosStoriesAPI(+storyItem.resourceURI.split('/')[6]);
-          const storyAPI = storyResult.results[0];
-
-          storyAdicionada.resourceUri = storyItem.resourceURI;
-          storyAdicionada.type = storyItem.type;
-          storyAdicionada.id = +storyItem.resourceURI.split('/')[6];
-          storyAdicionada.description = storyAPI.description;
-          storyAdicionada.modified = storyAPI.modified instanceof Date ? new Date(storyAPI.modified) : new Date();
-          storyAdicionada.title = storyAPI.title;
-          storyAdicionada.originalIssue = await this.inserirQuadrinho(+storyAPI.originalissue.resourceURI.split('/')[6], transactionalEntityManager);
-        }
-
-        let relacaoStoryAdicionada = new Character_Stories();
-        
-        let relacaoStoryBaseDeDados = await transactionalEntityManager.getRepository(Character_Stories)
-          .findOne({where: {
-            character: personagemEncontrado,
-            story: storyAdicionada
-          }});
-
-        if(relacaoStoryBaseDeDados)
-          relacaoStoryAdicionada = relacaoStoryBaseDeDados;
-        else{
-          relacaoStoryAdicionada.character = personagemEncontrado;
-          relacaoStoryAdicionada.story = storyAdicionada;
-          relacaoStoryAdicionada.id = uuidv4();
-        }
-
-        if(relacaoStoryBaseDeDados === null){
-          if(storyBaseDeDados === null)
-            await transactionalEntityManager.getRepository(Story).save([storyAdicionada]);
-
-          await transactionalEntityManager.getRepository(Character_Stories).save([relacaoStoryAdicionada]);
-        }
-
-        characterStories.push(relacaoStoryAdicionada);
-      }catch{
-        continue;
+  
+      let storyBaseDeDados = await transactionalEntityManager.getRepository(Story)
+        .findOne({where: {
+          id: +storyItem.resourceURI.split('/')[6]
+        }});
+      
+      if(storyBaseDeDados){
+        storyAdicionada = storyBaseDeDados;
       }
+      else{
+        const storyAPI = this._storiesData.find(story => story.id === +storyItem.resourceURI.split('/')[6]);
+
+        if(!storyAPI)
+          continue;
+
+        storyAdicionada.resourceUri = storyItem.resourceURI;
+        storyAdicionada.type = storyItem.type;
+        storyAdicionada.id = +storyItem.resourceURI.split('/')[6];
+        storyAdicionada.description = storyAPI.description;
+        storyAdicionada.modified = storyAPI.modified instanceof Date ? new Date(storyAPI.modified) : new Date();
+        storyAdicionada.title = storyAPI.title;
+        storyAdicionada.originalIssue = await this.inserirQuadrinho(+storyAPI.originalissue.resourceURI.split('/')[6], transactionalEntityManager);
+      }
+
+      let relacaoStoryAdicionada = new Character_Stories();
+      
+      let relacaoStoryBaseDeDados = await transactionalEntityManager.getRepository(Character_Stories)
+        .findOne({where: {
+          character: personagemEncontrado,
+          story: storyAdicionada
+        }});
+
+      if(relacaoStoryBaseDeDados)
+        relacaoStoryAdicionada = relacaoStoryBaseDeDados;
+      else{
+        relacaoStoryAdicionada.character = personagemEncontrado;
+        relacaoStoryAdicionada.story = storyAdicionada;
+        relacaoStoryAdicionada.id = uuidv4();
+      }
+
+      if(relacaoStoryBaseDeDados === null){
+        if(storyBaseDeDados === null)
+          await transactionalEntityManager.getRepository(Story).save([storyAdicionada]);
+
+        await transactionalEntityManager.getRepository(Character_Stories).save([relacaoStoryAdicionada]);
+      }
+
+      characterStories.push(relacaoStoryAdicionada);
     }
 
     return characterStories;
