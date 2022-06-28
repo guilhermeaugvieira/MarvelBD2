@@ -43,36 +43,105 @@ class CargaService implements ICargaService{
     };
   }
 
-  private async obterDadosGerais(): Promise<void>{
-    for(let page = 1; page <= 16; page++){
-      const personagensPagina = await this.obterDadosPersonagensAPI(page);
+  private async obterDadosGerais(): Promise<void>{    
+    const {data: dadosCharacters} = await axios.get<IMarvelCharacter[][]>('http://localhost:3001/characters');
+    const {data: dadosComics } = await axios.get<IMarvelComic[][]>('http://localhost:3002/comics');
+    const {data: dadosEvents } = await axios.get<IMarvelEvent[][]>('http://localhost:3003/events');
+    const {data: dadosSeries } = await axios.get<IMarvelSeries[][]>('http://localhost:3004/series');
+    const {data: dadosStories } = await axios.get<IMarvelStory[][]>('http://localhost:3005/stories');
 
-      this._charactersData.push(...personagensPagina.data.results);
+    this._charactersData.push(...dadosCharacters.reduce((acum, curr) => {
+      acum.push(...curr);
+      return acum;
+    }, new Array<IMarvelCharacter>()));
+
+    this._comicData.push(...dadosComics.reduce((acum, curr) => {
+      acum.push(...curr);
+      return acum;
+    }, new Array<IMarvelComic>()));
+
+    this._eventData.push(...dadosEvents.reduce((acum, curr) => {
+      acum.push(...curr);
+      return acum;
+    }, new Array<IMarvelEvent>()));
+
+    this._serieData.push(...dadosSeries.reduce((acum, curr) => {
+      acum.push(...curr);
+      return acum;
+    }, new Array<IMarvelSeries>()));
+
+    this._storiesData.push(...dadosStories.reduce((acum, curr) => {
+      acum.push(...curr);
+      return acum;
+    }, new Array<IMarvelStory>()));
+
+    if(this._comicData.length === 0){
+      for(let page = (this._charactersData.length/100) > 1 ? (this._charactersData.length/100) + 1 : 1; page <= 16; page++){
+        console.log('Personagens adicionados ', this._charactersData.length);
+        
+        const personagensPagina = await this.obterDadosPersonagensAPI(page);
+  
+        await axios.post('http://localhost:3001/characters', personagensPagina.data.results);
+  
+        this._charactersData.push(...personagensPagina.data.results);
+      }
     }
 
-    for(let page = 1; page <= 16; page++){
-      const quadrinhosPagina = await this.obterDadosDetalhadosComicAPI(page);
+    console.log('Personagens Obtidos ', this._charactersData.length);
 
-      this._comicData.push(...quadrinhosPagina.data.results);
+    if(this._eventData.length === 0){
+      for(let page = (this._comicData.length/100) > 1 ? (this._comicData.length/100) + 1 : 1; page <= 524; page++){
+        console.log('Quadrinhos adicionados ', this._comicData.length);
+        
+        const quadrinhosPagina = await this.obterDadosDetalhadosComicAPI(page);
+  
+        await axios.post('http://localhost:3002/comics', quadrinhosPagina.data.results);
+  
+        this._comicData.push(...quadrinhosPagina.data.results);
+      }
     }
 
-    for(let page = 1; page <= 16; page++){
-      const eventosPagina = await this.obterDadosDetalhadosEventAPI(page);
+    console.log('Quadrinhos Obtidos ', this._comicData.length);
 
-      this._eventData.push(...eventosPagina.data.results);
+    if(this._serieData.length === 0){
+      for(let page = (this._eventData.length/100) > 1 ? (this._eventData.length/100) + 1 : 1; page <= 1; page++){
+        console.log('Eventos adicionados ', this._eventData.length);
+        
+        const eventosPagina = await this.obterDadosDetalhadosEventAPI(page);
+  
+        await axios.post('http://localhost:3003/events', eventosPagina.data.results);
+  
+        this._eventData.push(...eventosPagina.data.results);
+      }
     }
 
-    for(let page = 1; page <= 16; page++){
-      const seriesPagina = await this.obterDadosDetalhadosSeriesAPI(page);
+    console.log('Eventos Obtidos ', this._eventData.length);
 
-      this._serieData.push(...seriesPagina.data.results);
+    if(this._storiesData.length === 0){
+      for(let page = (this._serieData.length/100) > 1 ? (this._serieData.length/100) + 1 : 1; page <= 130; page++){
+        console.log('Series adicionadas ', this._serieData.length);
+        
+        const seriesPagina = await this.obterDadosDetalhadosSeriesAPI(page);
+  
+        await axios.post('http://localhost:3004/series', seriesPagina.data.results);
+  
+        this._serieData.push(...seriesPagina.data.results);
+      }
     }
 
-    for(let page = 1; page <= 16; page++){
+    console.log('Series Obtidos ', this._serieData.length);
+
+    for(let page = (this._storiesData.length/100) > 1 ? (this._storiesData.length/100) + 1 : 1; page <= 1210; page++){
+      console.log('Stories adicionados ', this._storiesData.length);
+      
       const storiesPagina = await this.obterDadosDetalhadosStoriesAPI(page);
+
+      await axios.post('http://localhost:3005/stories', storiesPagina.data.results);
 
       this._storiesData.push(...storiesPagina.data.results);
     }
+
+    console.log('Stories Obtidos ', this._storiesData.length);
 
   }
 
@@ -168,9 +237,15 @@ class CargaService implements ICargaService{
 
   private async inserirPersonagens(transactionalEntityManager: EntityManager):Promise<Character[]>{  
     let personagensAdicionados: Array<Character> = new Array<Character>();
+
+    let counter = 0;
     
     for(const personagemAtual of this._charactersData){        
       const personagemInserido = await this.verificarPersonagem(personagemAtual, transactionalEntityManager)
+
+      counter += 1;
+
+      console.log('Personagens Inseridos: ', counter);
       
       personagensAdicionados.push(personagemInserido);
     }
