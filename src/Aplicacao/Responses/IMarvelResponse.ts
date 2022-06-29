@@ -207,7 +207,7 @@ interface IMarvelStory{
   title: string,
   description?: string,
   modified: Date,
-  originalissue: IMarvelComicSummary  
+  originalIssue: IMarvelComicSummary  
 }
 
 interface IMarvelStoryDataContainer{

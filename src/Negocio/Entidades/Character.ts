@@ -4,6 +4,7 @@ import { Character_Comics } from "./Character_Comics"
 import { Character_Stories } from "./Character_Stories"
 import { Character_Events } from "./Character_Events"
 import { Character_Series } from "./Character_Series"
+import { Url_Character } from "./Url_Character"
 
 @Entity({name: 'character', schema: 'marvel'})
 export class Character{
@@ -17,14 +18,14 @@ export class Character{
     @Column({nullable: true})
     description: string
 
-    @Column({nullable: false})
-    modified: Date
+    @Column({nullable: true})
+    modified?: Date
 
     @Column({nullable: false, name: 'resource_uri'})
     resourceUri: string
 
-    @OneToMany(() => Url, url => url.character)
-    urls: Url[]
+    @OneToMany(() => Url_Character, urlCharacter => urlCharacter.character)
+    urls: Url_Character[]
     
     @Column({nullable: false})
     thumbnail: string

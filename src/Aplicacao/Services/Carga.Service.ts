@@ -19,6 +19,10 @@ import { Character_Stories } from '../../Negocio/Entidades/Character_Stories';
 import { Story } from '../../Negocio/Entidades/Story';
 import { Comic_Creators } from '../../Negocio/Entidades/Comic_Creators';
 import { Creator } from '../../Negocio/Entidades/Creator';
+import { Url_Character } from '../../Negocio/Entidades/Url_Character';
+import { Url_Comic } from '../../Negocio/Entidades/Url_Comic';
+import { Url_Event } from '../../Negocio/Entidades/Url_Event';
+import { Url_Serie } from '../../Negocio/Entidades/Url_Serie';
 
 @scoped(Lifecycle.ResolutionScoped)
 class CargaService implements ICargaService{
@@ -49,31 +53,22 @@ class CargaService implements ICargaService{
     const {data: dadosEvents } = await axios.get<IMarvelEvent[][]>('http://localhost:3003/events');
     const {data: dadosSeries } = await axios.get<IMarvelSeries[][]>('http://localhost:3004/series');
     const {data: dadosStories } = await axios.get<IMarvelStory[][]>('http://localhost:3005/stories');
+    const {data: dadosStories2 } = await axios.get<IMarvelStory[][]>('http://localhost:3006/stories');
+    const {data: dadosStories3 } = await axios.get<IMarvelStory[][]>('http://localhost:3007/stories');
+    const {data: dadosStories4 } = await axios.get<IMarvelStory[][]>('http://localhost:3008/stories');
+    const {data: dadosStories5 } = await axios.get<IMarvelStory[][]>('http://localhost:3009/stories');
+    const {data: dadosStories6 } = await axios.get<IMarvelStory[][]>('http://localhost:3010/stories');
 
-    this._charactersData.push(...dadosCharacters.reduce((acum, curr) => {
-      acum.push(...curr);
-      return acum;
-    }, new Array<IMarvelCharacter>()));
-
-    this._comicData.push(...dadosComics.reduce((acum, curr) => {
-      acum.push(...curr);
-      return acum;
-    }, new Array<IMarvelComic>()));
-
-    this._eventData.push(...dadosEvents.reduce((acum, curr) => {
-      acum.push(...curr);
-      return acum;
-    }, new Array<IMarvelEvent>()));
-
-    this._serieData.push(...dadosSeries.reduce((acum, curr) => {
-      acum.push(...curr);
-      return acum;
-    }, new Array<IMarvelSeries>()));
-
-    this._storiesData.push(...dadosStories.reduce((acum, curr) => {
-      acum.push(...curr);
-      return acum;
-    }, new Array<IMarvelStory>()));
+    this._charactersData.push(...dadosCharacters.flat(1));
+    this._comicData.push(...dadosComics.flat(1));
+    this._eventData.push(...dadosEvents.flat(1));
+    this._serieData.push(...dadosSeries.flat(1));
+    this._storiesData.push(...dadosStories.flat(1));
+    this._storiesData.push(...dadosStories2.flat(1));
+    this._storiesData.push(...dadosStories3.flat(1));
+    this._storiesData.push(...dadosStories4.flat(1));
+    this._storiesData.push(...dadosStories5.flat(1));
+    this._storiesData.push(...dadosStories6.flat(1));
 
     if(this._comicData.length === 0){
       for(let page = (this._charactersData.length/100) > 1 ? (this._charactersData.length/100) + 1 : 1; page <= 16; page++){
@@ -136,13 +131,12 @@ class CargaService implements ICargaService{
       
       const storiesPagina = await this.obterDadosDetalhadosStoriesAPI(page);
 
-      await axios.post('http://localhost:3005/stories', storiesPagina.data.results);
+      await axios.post('http://localhost:3010/stories', storiesPagina.data.results);
 
       this._storiesData.push(...storiesPagina.data.results);
     }
 
     console.log('Stories Obtidos ', this._storiesData.length);
-
   }
 
   private async obterDadosPersonagensAPI(page: number) : Promise<IMarvelCharactersResponse>{
@@ -261,11 +255,9 @@ class CargaService implements ICargaService{
 
     let personagemAdicionado = new Character();
 
-    const verificarData = personagem.modified instanceof Date;
-
     personagemAdicionado.description = personagem.description;
     personagemAdicionado.id = personagem.id;
-    personagemAdicionado.modified = verificarData ? new Date(personagem.modified) : new Date();
+    personagemAdicionado.modified = personagem.modified instanceof Date ? new Date(personagem.modified) : null;
     personagemAdicionado.name = personagem.name;
     personagemAdicionado.resourceUri = personagem.resourceURI;
     personagemAdicionado.thumbnail = `${personagem.thumbnail.path}.${personagem.thumbnail.extension}`;
@@ -282,7 +274,19 @@ class CargaService implements ICargaService{
 
     await transactionalEntityManager.getRepository(Url).save(urls);
 
-    personagemAdicionado.urls = urls;
+    const relacoesPersonagemUrl = new Array<Url_Character>();
+
+    urls.forEach(url => {
+      relacoesPersonagemUrl.push({
+        character : personagemAdicionado,
+        id : uuidv4(),
+        url : url
+      });
+    })
+
+    await transactionalEntityManager.getRepository(Url_Character).save(relacoesPersonagemUrl);
+
+    // personagemAdicionado.urls = relacoesPersonagemUrl;
 
     personagemAdicionado.comics = new Array<Character_Comics>();
     personagemAdicionado.events = new Array<Character_Events>();
@@ -359,6 +363,8 @@ class CargaService implements ICargaService{
     .findOne({where: {
       id: idComic
     }});
+
+    let urlsQuadrinho = new Array<Url>();
     
     if(quadrinhoBaseDeDados){
       quadrinhoAdicionado = quadrinhoBaseDeDados;
@@ -369,7 +375,7 @@ class CargaService implements ICargaService{
       if(!comicAPI)
         return null;
 
-      const urlsQuadrinho: Array<Url> = comicAPI.urls.map(url => ({
+      urlsQuadrinho = comicAPI.urls.map(url => ({
         id: uuidv4(),
         type: url.type,
         url: url.url
@@ -387,17 +393,31 @@ class CargaService implements ICargaService{
       quadrinhoAdicionado.isbn = comicAPI.isbn;
       quadrinhoAdicionado.issn = comicAPI.issn;
       quadrinhoAdicionado.issueNumber = comicAPI.issueNumber;
-      quadrinhoAdicionado.modified = comicAPI.modified instanceof Date ? new Date(comicAPI.modified) : new Date();
+      quadrinhoAdicionado.modified = comicAPI.modified instanceof Date ? new Date(comicAPI.modified) : null;
       quadrinhoAdicionado.pageCount = comicAPI.pageCount;
       quadrinhoAdicionado.title = comicAPI.title;
       quadrinhoAdicionado.upc = comicAPI.upc;
       quadrinhoAdicionado.variantDescription = comicAPI.variantDescription;
-      quadrinhoAdicionado.urls = urlsQuadrinho;
       quadrinhoAdicionado.thumbnail = `${comicAPI.thumbnail.path}.${comicAPI.thumbnail.extension}`;
     }
 
-    if(!quadrinhoBaseDeDados)
+    if(!quadrinhoBaseDeDados){
       await transactionalEntityManager.getRepository(Comic).save([quadrinhoAdicionado]);
+
+      const relacoesQuadrinhoUrl = new Array<Url_Comic>();
+
+      urlsQuadrinho.forEach(url => {
+        relacoesQuadrinhoUrl.push({
+          comic : quadrinhoAdicionado,
+          id : uuidv4(),
+          url : url
+        });
+      })
+  
+      await transactionalEntityManager.getRepository(Url_Comic).save(relacoesQuadrinhoUrl);
+
+      // quadrinhoAdicionado.urls = relacoesQuadrinhoUrl;
+    }
 
     quadrinhoAdicionado.creators = await this.verificarCreators(quadrinhoAdicionado.id, transactionalEntityManager);
 
@@ -476,14 +496,27 @@ class CargaService implements ICargaService{
 
       eventoAdicionado.resourceUri = eventAPI.resourceURI;
       eventoAdicionado.id = idEvento;
-      eventoAdicionado.urls = urlsEvento;
       eventoAdicionado.description = eventAPI.description;
-      eventoAdicionado.end = eventAPI.end instanceof Date ? new Date(eventAPI.end) : new Date();
-      eventoAdicionado.modified = eventAPI.modified instanceof Date ? new Date(eventAPI.modified) : new Date();
-      eventoAdicionado.start = eventAPI.start instanceof Date ? new Date(eventAPI.start) : new Date();
+      eventoAdicionado.end = eventAPI.end instanceof Date ? new Date(eventAPI.end) : null;
+      eventoAdicionado.modified = eventAPI.modified instanceof Date ? new Date(eventAPI.modified) : null;
+      eventoAdicionado.start = eventAPI.start instanceof Date ? new Date(eventAPI.start) : null;
       eventoAdicionado.title = eventAPI.title;
 
       await transactionalEntityManager.getRepository(Event).save([eventoAdicionado]);
+
+      const relacoesUrlEvento = new Array<Url_Event>();
+
+      urlsEvento.forEach(url => {
+        relacoesUrlEvento.push({
+          event : eventoAdicionado,
+          id : uuidv4(),
+          url : url
+        })
+      });
+
+      await transactionalEntityManager.getRepository(Url_Event).save(relacoesUrlEvento);
+
+      // eventoAdicionado.urls = relacoesUrlEvento;
     }
 
     return eventoAdicionado; 
@@ -549,6 +582,8 @@ class CargaService implements ICargaService{
     .findOne({where: {
       id: idSerie
     }});
+
+    const relacoesUrlSerie = new Array<Url_Serie>();
     
     if(serieBaseDeDados){
       serieAdicionada = serieBaseDeDados;
@@ -564,18 +599,31 @@ class CargaService implements ICargaService{
         type: url.type,
         url: url.url
       }));
+
+      await transactionalEntityManager.getRepository(Url).save(urlsSerie);
       
       serieAdicionada.resourceUri = serieApi.resourceURI;
       serieAdicionada.id = idSerie;
       serieAdicionada.description = serieApi.description;
       serieAdicionada.endYear = serieApi.endYear;
-      serieAdicionada.modified = serieApi.modified instanceof Date ? new Date(serieApi.modified) : new Date();
+      serieAdicionada.modified = serieApi.modified instanceof Date ? new Date(serieApi.modified) : null;
       serieAdicionada.startYear = serieApi.startYear;
       serieAdicionada.title = serieApi.title;
-      serieAdicionada.urls = urlsSerie;
-    }
 
-    await transactionalEntityManager.getRepository(Serie).save([serieAdicionada]);
+      urlsSerie.forEach(url => {
+        relacoesUrlSerie.push({
+          id: uuidv4(),
+          serie: serieAdicionada,
+          url: url
+        });
+      });
+
+      await transactionalEntityManager.getRepository(Serie).save([serieAdicionada]);
+
+      await transactionalEntityManager.getRepository(Url_Serie).save(relacoesUrlSerie);
+
+      // serieAdicionada.urls = relacoesUrlSerie;
+    }
 
     return serieAdicionada;
   }
@@ -667,9 +715,9 @@ class CargaService implements ICargaService{
         storyAdicionada.type = storyItem.type;
         storyAdicionada.id = +storyItem.resourceURI.split('/')[6];
         storyAdicionada.description = storyAPI.description;
-        storyAdicionada.modified = storyAPI.modified instanceof Date ? new Date(storyAPI.modified) : new Date();
+        storyAdicionada.modified = storyAPI.modified instanceof Date ? new Date(storyAPI.modified) : null;
         storyAdicionada.title = storyAPI.title;
-        storyAdicionada.originalIssue = await this.inserirQuadrinho(+storyAPI.originalissue.resourceURI.split('/')[6], transactionalEntityManager);
+        storyAdicionada.originalIssue =  storyAPI.originalIssue ?await this.inserirQuadrinho(+storyAPI.originalIssue.resourceURI.split('/')[6], transactionalEntityManager) : null;
       }
 
       let relacaoStoryAdicionada = new Character_Stories();
@@ -713,11 +761,6 @@ class CargaService implements ICargaService{
         name: personagem.name,
         resourceURI: personagem.resourceUri,
         thumbnail: personagem.thumbnail,
-        urls: personagem.urls.map(url => ({
-          id: url.id,
-          type: url.type,
-          url: url.url
-        })),
         stories: personagem.stories ? personagem.stories.map(story => ({
           id: story.story.id,
           resourceUri: story.story.resourceUri,

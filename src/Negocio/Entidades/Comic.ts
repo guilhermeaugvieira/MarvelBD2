@@ -1,7 +1,9 @@
-import { Entity, Column, OneToMany, OneToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from "typeorm"
+import { Entity, Column, OneToMany, OneToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, Double } from "typeorm"
 import { Character_Comics } from "./Character_Comics"
 import { Comic_Creators } from "./Comic_Creators"
+import { Story } from "./Story"
 import { Url } from "./Url"
+import { Url_Comic } from "./Url_Comic"
 
 @Entity({name:'comic', schema: 'marvel'})
 export class Comic{
@@ -18,7 +20,7 @@ export class Comic{
   @Column({nullable: false})
   title: string
 
-  @Column({nullable: false, name: 'issue_number'})
+  @Column({nullable: false, type: 'float', name: 'issue_number'})
   issueNumber: number
 
   @Column({nullable: true, name: 'variant_description'})
@@ -27,8 +29,8 @@ export class Comic{
   @Column({nullable: true})
   description?: string
 
-  @Column({nullable: false})
-  modified: Date
+  @Column({nullable: true})
+  modified?: Date
 
   @Column({nullable: false})
   isbn: string
@@ -51,8 +53,8 @@ export class Comic{
   @Column({nullable: false, name: 'page_count'})
   pageCount: number
 
-  @OneToMany(() => Url, url => url.comic)
-  urls: Url[]
+  @OneToMany(() => Url_Comic, urlComic => urlComic.comic)
+  urls: Url_Comic[]
 
   @Column({nullable: false})
   thumbnail: string
@@ -68,4 +70,7 @@ export class Comic{
 
   @UpdateDateColumn({nullable: false})
   updated_at?: Date
+
+  @OneToMany(() => Story, story => story.originalIssue)
+  stories: Story[]
 }

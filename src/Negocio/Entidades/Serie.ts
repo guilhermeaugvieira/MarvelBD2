@@ -1,6 +1,7 @@
 import { Entity, Column, OneToMany, OneToOne, JoinColumn, CreateDateColumn, UpdateDateColumn} from "typeorm"
 import { Character_Series } from "./Character_Series"
 import { Url } from "./Url"
+import { Url_Serie } from "./Url_Serie"
 
 @Entity({name: 'serie', schema: 'marvel'})
 export class Serie{
@@ -17,8 +18,8 @@ export class Serie{
   @Column({nullable: true})
   description: string
 
-  @OneToMany(() => Url, url => url.serie)
-  urls: Url[]
+  @OneToMany(() => Url_Serie, urlSerie => urlSerie.serie)
+  urls: Url_Serie[]
 
   @OneToMany(() => Character_Series, character_series => character_series.serie)
   characters: Character_Series[]
@@ -29,8 +30,8 @@ export class Serie{
   @Column({nullable: false, name: 'end_year'})
   endYear: number
 
-  @Column({nullable: false})
-  modified: Date
+  @Column({nullable: true})
+  modified?: Date
 
   @OneToOne(() => Serie, {
     onDelete: "NO ACTION",

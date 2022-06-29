@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany, OneToOne, JoinColumn, CreateDateColumn, UpdateDateColumn} from "typeorm"
+import { Entity, Column, OneToMany, OneToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, ManyToOne} from "typeorm"
 import { Character_Stories } from "./Character_Stories"
 import { Comic } from "./Comic"
 
@@ -20,14 +20,13 @@ export class Story{
   @Column({nullable: true})
   description?: string
 
-  @Column({nullable: false})
-  modified: Date
+  @Column({nullable: true})
+  modified?: Date
 
-  @OneToOne(() => Comic, {
+  @ManyToOne(() => Comic, comic => comic.stories, {
     onDelete: "NO ACTION",
     onUpdate: "CASCADE",
   })
-  @JoinColumn({name: 'original_issue'})
   originalIssue: Comic
 
   @OneToMany(() => Character_Stories, character_stories => character_stories.story)

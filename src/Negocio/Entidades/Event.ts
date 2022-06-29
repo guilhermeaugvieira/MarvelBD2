@@ -1,6 +1,7 @@
 import { Entity, Column, OneToMany, OneToOne, JoinColumn, CreateDateColumn, UpdateDateColumn} from "typeorm"
 import { Character_Events } from "./Character_Events"
 import { Url } from "./Url"
+import { Url_Event } from "./Url_Event"
 
 @Entity({name: 'event', schema: 'marvel'})
 export class Event{
@@ -17,17 +18,17 @@ export class Event{
   @Column({nullable: true})
   description?: string
 
-  @OneToMany(() => Url, url => url.event)
-  urls: Url[]
+  @OneToMany(() => Url_Event, urlEvent => urlEvent.event)
+  urls: Url_Event[]
 
-  @Column({nullable: false})
-  modified: Date
+  @Column({nullable: true})
+  modified?: Date
 
-  @Column({nullable: false})
-  start: Date
+  @Column({nullable: true})
+  start?: Date
 
-  @Column({nullable: false})
-  end: Date
+  @Column({nullable: true})
+  end?: Date
 
   @OneToOne(() => Event, {
     onDelete: "NO ACTION",
