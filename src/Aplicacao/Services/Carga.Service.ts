@@ -257,7 +257,7 @@ class CargaService implements ICargaService{
 
     personagemAdicionado.description = personagem.description;
     personagemAdicionado.id = personagem.id;
-    personagemAdicionado.modified = personagem.modified instanceof Date ? new Date(personagem.modified) : null;
+    personagemAdicionado.modified = personagem.modified && !isNaN(Date.parse(personagem.modified.toString())) ? new Date(personagem.modified) : null;
     personagemAdicionado.name = personagem.name;
     personagemAdicionado.resourceUri = personagem.resourceURI;
     personagemAdicionado.thumbnail = `${personagem.thumbnail.path}.${personagem.thumbnail.extension}`;
@@ -393,7 +393,7 @@ class CargaService implements ICargaService{
       quadrinhoAdicionado.isbn = comicAPI.isbn;
       quadrinhoAdicionado.issn = comicAPI.issn;
       quadrinhoAdicionado.issueNumber = comicAPI.issueNumber;
-      quadrinhoAdicionado.modified = comicAPI.modified instanceof Date ? new Date(comicAPI.modified) : null;
+      quadrinhoAdicionado.modified = comicAPI.modified && !isNaN(Date.parse(comicAPI.modified.toString())) ? new Date(comicAPI.modified) : null;
       quadrinhoAdicionado.pageCount = comicAPI.pageCount;
       quadrinhoAdicionado.title = comicAPI.title;
       quadrinhoAdicionado.upc = comicAPI.upc;
@@ -497,10 +497,12 @@ class CargaService implements ICargaService{
       eventoAdicionado.resourceUri = eventAPI.resourceURI;
       eventoAdicionado.id = idEvento;
       eventoAdicionado.description = eventAPI.description;
-      eventoAdicionado.end = eventAPI.end instanceof Date ? new Date(eventAPI.end) : null;
-      eventoAdicionado.modified = eventAPI.modified instanceof Date ? new Date(eventAPI.modified) : null;
-      eventoAdicionado.start = eventAPI.start instanceof Date ? new Date(eventAPI.start) : null;
+      eventoAdicionado.end = eventAPI.end && !isNaN(Date.parse(eventAPI.end.toString())) ? new Date(eventAPI.end) : null;
+      eventoAdicionado.modified = eventAPI.modified && !isNaN(Date.parse(eventAPI.modified.toString())) ? new Date(eventAPI.modified) : null;
+      eventoAdicionado.start = eventAPI.start && !isNaN(Date.parse(eventAPI.start.toString())) ? new Date(eventAPI.start) : null;
       eventoAdicionado.title = eventAPI.title;
+      eventoAdicionado.nextEvent = null;
+      eventoAdicionado.previousEvent = null;
 
       await transactionalEntityManager.getRepository(Event).save([eventoAdicionado]);
 
@@ -543,11 +545,33 @@ class CargaService implements ICargaService{
 
       let eventoAdicionado = await this.inserirEvento(+eventAPI.resourceURI.split('/')[6],transactionalEntityManager);
 
-      if(eventAPI.next)
-        eventoAdicionado.nextEvent = await this.inserirEvento(+eventAPI.next.resourceURI.split('/')[6], transactionalEntityManager)
+      if(eventAPI.next && !eventoAdicionado.nextEvent){
+        eventoAdicionado.nextEvent = await this.inserirEvento(+eventAPI.next.resourceURI.split('/')[6], transactionalEntityManager);
 
-      if(eventAPI.previous)
-        eventoAdicionado.previousEvent = await this.inserirEvento(+eventAPI.previous.resourceURI.split('/')[6], transactionalEntityManager)
+        await transactionalEntityManager.getRepository(Event).save({
+          id: eventoAdicionado.id,
+          nextEvent: eventoAdicionado.nextEvent,
+        });
+
+        await transactionalEntityManager.getRepository(Event).save({
+          id: eventoAdicionado.nextEvent.id,
+          previousEvent: eventoAdicionado,
+        });
+      }
+
+      if(eventAPI.previous && !eventoAdicionado.previousEvent){
+        eventoAdicionado.previousEvent = await this.inserirEvento(+eventAPI.previous.resourceURI.split('/')[6], transactionalEntityManager);
+
+        await transactionalEntityManager.getRepository(Event).save({
+          id: eventoAdicionado.id,
+          previousEvent: eventoAdicionado.previousEvent,
+        });
+
+        await transactionalEntityManager.getRepository(Event).save({
+          id: eventoAdicionado.previousEvent.id,
+          nextEvent: eventoAdicionado,
+        });
+      }
 
       let relacaoEventoAdicionada = new Character_Events();
       
@@ -606,9 +630,11 @@ class CargaService implements ICargaService{
       serieAdicionada.id = idSerie;
       serieAdicionada.description = serieApi.description;
       serieAdicionada.endYear = serieApi.endYear;
-      serieAdicionada.modified = serieApi.modified instanceof Date ? new Date(serieApi.modified) : null;
+      serieAdicionada.modified = serieApi.modified && !isNaN(Date.parse(serieApi.modified.toString())) ? new Date(serieApi.modified) : null;
       serieAdicionada.startYear = serieApi.startYear;
       serieAdicionada.title = serieApi.title;
+      serieAdicionada.nextSerie = null;
+      serieAdicionada.previousSerie = null;
 
       urlsSerie.forEach(url => {
         relacoesUrlSerie.push({
@@ -649,11 +675,33 @@ class CargaService implements ICargaService{
 
       const serieAdicionada = await this.inserirSerie(+serieApi.resourceURI.split('/')[6], transactionalEntityManager);
 
-      if(serieApi.next)
+      if(serieApi.next && !serieAdicionada.nextSerie){
         serieAdicionada.nextSerie = await this.inserirSerie(+serieApi.next.resourceURI.split('/')[6], transactionalEntityManager);
 
-      if(serieApi.previous)
+        await transactionalEntityManager.getRepository(Serie).save({
+          id: serieAdicionada.id,
+          nextSerie: serieAdicionada.nextSerie,
+        });
+
+        await transactionalEntityManager.getRepository(Serie).save({
+          id: serieAdicionada.nextSerie.id,
+          previousSerie: serieAdicionada,
+        });
+      }
+
+      if(serieApi.previous && !serieAdicionada.previousSerie){
         serieAdicionada.previousSerie = await this.inserirSerie(+serieApi.previous.resourceURI.split('/')[6], transactionalEntityManager);
+
+        await transactionalEntityManager.getRepository(Serie).save({
+          id: serieAdicionada.id,
+          previousSerie: serieAdicionada.previousSerie,
+        });
+
+        await transactionalEntityManager.getRepository(Serie).save({
+          id: serieAdicionada.previousSerie.id,
+          nextSerie: serieAdicionada,
+        });
+      }
 
       let relacaoSerieAdicionada = new Character_Series();
       
@@ -715,9 +763,9 @@ class CargaService implements ICargaService{
         storyAdicionada.type = storyItem.type;
         storyAdicionada.id = +storyItem.resourceURI.split('/')[6];
         storyAdicionada.description = storyAPI.description;
-        storyAdicionada.modified = storyAPI.modified instanceof Date ? new Date(storyAPI.modified) : null;
+        storyAdicionada.modified = storyAPI.modified && !isNaN(Date.parse(storyAPI.modified.toString())) ? new Date(storyAPI.modified) : null;
         storyAdicionada.title = storyAPI.title;
-        storyAdicionada.originalIssue =  storyAPI.originalIssue ?await this.inserirQuadrinho(+storyAPI.originalIssue.resourceURI.split('/')[6], transactionalEntityManager) : null;
+        storyAdicionada.originalIssue =  storyAPI.originalIssue ? await this.inserirQuadrinho(+storyAPI.originalIssue.resourceURI.split('/')[6], transactionalEntityManager) : null;
       }
 
       let relacaoStoryAdicionada = new Character_Stories();

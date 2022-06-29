@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany, OneToOne, JoinColumn, CreateDateColumn, UpdateDateColumn} from "typeorm"
+import { Entity, Column, OneToMany, OneToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, ManyToOne} from "typeorm"
 import { Character_Series } from "./Character_Series"
 import { Url } from "./Url"
 import { Url_Serie } from "./Url_Serie"
@@ -33,19 +33,29 @@ export class Serie{
   @Column({nullable: true})
   modified?: Date
 
-  @OneToOne(() => Serie, {
+  @ManyToOne(() => Serie, serie => serie.nextSerieMain, {
     onDelete: "NO ACTION",
     onUpdate: "CASCADE",
   })
-  @JoinColumn({name: 'previous_serie'})
-  previousSerie: Serie
+  nextSerie?: Serie
 
-  @OneToOne(() => Serie, {
+  @ManyToOne(() => Serie, serie => serie.previousSerieMain, {
     onDelete: "NO ACTION",
     onUpdate: "CASCADE",
   })
-  @JoinColumn({name: 'next_serie'})
-  nextSerie: Serie
+  previousSerie?: Serie
+
+  @OneToMany(() => Serie, serie => serie.nextSerie, {
+    onDelete: "NO ACTION",
+    onUpdate: "CASCADE",
+  })
+  nextSerieMain: Serie[]
+
+  @OneToMany(() => Serie, serie => serie.previousSerie, {
+    onDelete: "NO ACTION",
+    onUpdate: "CASCADE",
+  })
+  previousSerieMain: Serie[]
 
   @CreateDateColumn({nullable: false})
   created_at?: Date

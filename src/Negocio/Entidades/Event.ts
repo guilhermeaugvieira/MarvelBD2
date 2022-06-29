@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany, OneToOne, JoinColumn, CreateDateColumn, UpdateDateColumn} from "typeorm"
+import { Entity, Column, OneToMany, OneToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, ManyToOne} from "typeorm"
 import { Character_Events } from "./Character_Events"
 import { Url } from "./Url"
 import { Url_Event } from "./Url_Event"
@@ -30,19 +30,29 @@ export class Event{
   @Column({nullable: true})
   end?: Date
 
-  @OneToOne(() => Event, {
+  @ManyToOne(() => Event, event => event.nextEventMain, {
     onDelete: "NO ACTION",
     onUpdate: "CASCADE",
   })
-  @JoinColumn({name: 'next_event'})
-  nextEvent: Event
+  nextEvent?: Event
 
-  @OneToOne(() => Event, {
+  @ManyToOne(() => Event, event => event.previousEventMain, {
     onDelete: "NO ACTION",
     onUpdate: "CASCADE",
   })
-  @JoinColumn({name: 'previous_event'})
-  previousEvent: Event
+  previousEvent?: Event
+
+  @OneToMany(() => Event, event => event.nextEvent, {
+    onDelete: "NO ACTION",
+    onUpdate: "CASCADE",
+  })
+  nextEventMain: Event[]
+
+  @OneToMany(() => Event, event => event.previousEvent, {
+    onDelete: "NO ACTION",
+    onUpdate: "CASCADE",
+  })
+  previousEventMain: Event[]
 
   @OneToMany(() => Character_Events, character_event => character_event.character)
   characters: Character_Events[]

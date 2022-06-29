@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class Initial1656460635638 implements MigrationInterface {
-    name = 'Initial1656460635638'
+export class Initial1656483247269 implements MigrationInterface {
+    name = 'Initial1656483247269'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createSchema('marvel', true);
@@ -9,10 +9,10 @@ export class Initial1656460635638 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE "marvel"."tbl__comic_creators" ("id" character varying NOT NULL, "role" character varying NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "comicId" integer, "creatorId" integer, CONSTRAINT "PK_aa1bd251aef33c3178ddb7012ba" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "marvel"."tbl__url_character" ("id" character varying NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "characterId" integer, "urlId" character varying, CONSTRAINT "PK_628a671b6f8479334b4bd887985" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "marvel"."tbl__character_events" ("id" character varying NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "characterId" integer, "eventId" integer, CONSTRAINT "PK_972a8f76833ff8e637913b1518f" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TABLE "marvel"."tbl__event" ("id" integer NOT NULL, "resource_uri" character varying NOT NULL, "title" character varying NOT NULL, "description" character varying, "modified" TIMESTAMP, "start" TIMESTAMP, "end" TIMESTAMP, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "next_event" integer, "previous_event" integer, CONSTRAINT "REL_002cdba1a4930cdb5ebc7e3a6e" UNIQUE ("next_event"), CONSTRAINT "REL_ee907e285ddecf297f3880b9a7" UNIQUE ("previous_event"), CONSTRAINT "PK_a47934ef96d0df635a11dbf6d1b" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "marvel"."tbl__event" ("id" integer NOT NULL, "resource_uri" character varying NOT NULL, "title" character varying NOT NULL, "description" character varying, "modified" TIMESTAMP, "start" TIMESTAMP, "end" TIMESTAMP, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "nextEventId" integer, "previousEventId" integer, CONSTRAINT "PK_a47934ef96d0df635a11dbf6d1b" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "marvel"."tbl__url_event" ("id" character varying NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "eventId" integer, "urlId" character varying, CONSTRAINT "PK_c09d1cec4875a785988b6be656c" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "marvel"."tbl__character_series" ("id" character varying NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "characterId" integer, "serieId" integer, CONSTRAINT "PK_079af5ce94d7b893296376bde39" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TABLE "marvel"."tbl__serie" ("id" integer NOT NULL, "resource_uri" character varying NOT NULL, "title" character varying NOT NULL, "description" character varying, "start_year" integer NOT NULL, "end_year" integer NOT NULL, "modified" TIMESTAMP, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "previous_serie" integer, "next_serie" integer, CONSTRAINT "REL_9f4396ae4a5c581db42616f89d" UNIQUE ("previous_serie"), CONSTRAINT "REL_7357eaa18a01f16ff761819fb4" UNIQUE ("next_serie"), CONSTRAINT "PK_e7c45f329706fd27cd18ca6bd12" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "marvel"."tbl__serie" ("id" integer NOT NULL, "resource_uri" character varying NOT NULL, "title" character varying NOT NULL, "description" character varying, "start_year" integer NOT NULL, "end_year" integer NOT NULL, "modified" TIMESTAMP, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "nextSerieId" integer, "previousSerieId" integer, CONSTRAINT "PK_e7c45f329706fd27cd18ca6bd12" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "marvel"."tbl__url_serie" ("id" character varying NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "serieId" integer, "urlId" character varying, CONSTRAINT "PK_ca51fc19ea70175f0b538f4e49a" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "marvel"."tbl__url" ("id" character varying NOT NULL, "type" character varying NOT NULL, "url" character varying NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_8472f6a5d5f14670614bf4da30f" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "marvel"."tbl__url_comic" ("id" character varying NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "comicId" integer, "urlId" character varying, CONSTRAINT "PK_fb6f1c51271c15fa7a550b3ce28" PRIMARY KEY ("id"))`);
@@ -27,14 +27,14 @@ export class Initial1656460635638 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "marvel"."tbl__url_character" ADD CONSTRAINT "FK_5e2651cb2c296aa5bc7f33f3a8c" FOREIGN KEY ("urlId") REFERENCES "marvel"."tbl__url"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "marvel"."tbl__character_events" ADD CONSTRAINT "FK_532eac0dd02133882946d5a1924" FOREIGN KEY ("characterId") REFERENCES "marvel"."tbl__character"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "marvel"."tbl__character_events" ADD CONSTRAINT "FK_aa35bc520e464c6870cfddc8d81" FOREIGN KEY ("eventId") REFERENCES "marvel"."tbl__event"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
-        await queryRunner.query(`ALTER TABLE "marvel"."tbl__event" ADD CONSTRAINT "FK_002cdba1a4930cdb5ebc7e3a6ed" FOREIGN KEY ("next_event") REFERENCES "marvel"."tbl__event"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
-        await queryRunner.query(`ALTER TABLE "marvel"."tbl__event" ADD CONSTRAINT "FK_ee907e285ddecf297f3880b9a7b" FOREIGN KEY ("previous_event") REFERENCES "marvel"."tbl__event"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE "marvel"."tbl__event" ADD CONSTRAINT "FK_2eafd7e99df7d09c9e2764b6937" FOREIGN KEY ("nextEventId") REFERENCES "marvel"."tbl__event"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE "marvel"."tbl__event" ADD CONSTRAINT "FK_130fc426b8d250fe8ecd41878c6" FOREIGN KEY ("previousEventId") REFERENCES "marvel"."tbl__event"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "marvel"."tbl__url_event" ADD CONSTRAINT "FK_8c6394214f4371a55f229bacb97" FOREIGN KEY ("eventId") REFERENCES "marvel"."tbl__event"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "marvel"."tbl__url_event" ADD CONSTRAINT "FK_bab293a12daf4d51f54368d0159" FOREIGN KEY ("urlId") REFERENCES "marvel"."tbl__url"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "marvel"."tbl__character_series" ADD CONSTRAINT "FK_9c783419b21ef905a3da367d709" FOREIGN KEY ("characterId") REFERENCES "marvel"."tbl__character"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "marvel"."tbl__character_series" ADD CONSTRAINT "FK_3127f6da1acbd96b78de333eb58" FOREIGN KEY ("serieId") REFERENCES "marvel"."tbl__serie"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
-        await queryRunner.query(`ALTER TABLE "marvel"."tbl__serie" ADD CONSTRAINT "FK_9f4396ae4a5c581db42616f89de" FOREIGN KEY ("previous_serie") REFERENCES "marvel"."tbl__serie"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
-        await queryRunner.query(`ALTER TABLE "marvel"."tbl__serie" ADD CONSTRAINT "FK_7357eaa18a01f16ff761819fb4d" FOREIGN KEY ("next_serie") REFERENCES "marvel"."tbl__serie"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE "marvel"."tbl__serie" ADD CONSTRAINT "FK_826eeaca921bfa75a479b7443b9" FOREIGN KEY ("nextSerieId") REFERENCES "marvel"."tbl__serie"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE "marvel"."tbl__serie" ADD CONSTRAINT "FK_76333455782661087e342b92b28" FOREIGN KEY ("previousSerieId") REFERENCES "marvel"."tbl__serie"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "marvel"."tbl__url_serie" ADD CONSTRAINT "FK_921c9ff75f2b5e70cba1e6c0ef3" FOREIGN KEY ("serieId") REFERENCES "marvel"."tbl__serie"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "marvel"."tbl__url_serie" ADD CONSTRAINT "FK_b342fbd0a53e02821a0b72f115e" FOREIGN KEY ("urlId") REFERENCES "marvel"."tbl__url"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "marvel"."tbl__url_comic" ADD CONSTRAINT "FK_7f7aefd4c8623b7d1873c01c564" FOREIGN KEY ("comicId") REFERENCES "marvel"."tbl__comic"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
@@ -56,14 +56,14 @@ export class Initial1656460635638 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "marvel"."tbl__url_comic" DROP CONSTRAINT "FK_7f7aefd4c8623b7d1873c01c564"`);
         await queryRunner.query(`ALTER TABLE "marvel"."tbl__url_serie" DROP CONSTRAINT "FK_b342fbd0a53e02821a0b72f115e"`);
         await queryRunner.query(`ALTER TABLE "marvel"."tbl__url_serie" DROP CONSTRAINT "FK_921c9ff75f2b5e70cba1e6c0ef3"`);
-        await queryRunner.query(`ALTER TABLE "marvel"."tbl__serie" DROP CONSTRAINT "FK_7357eaa18a01f16ff761819fb4d"`);
-        await queryRunner.query(`ALTER TABLE "marvel"."tbl__serie" DROP CONSTRAINT "FK_9f4396ae4a5c581db42616f89de"`);
+        await queryRunner.query(`ALTER TABLE "marvel"."tbl__serie" DROP CONSTRAINT "FK_76333455782661087e342b92b28"`);
+        await queryRunner.query(`ALTER TABLE "marvel"."tbl__serie" DROP CONSTRAINT "FK_826eeaca921bfa75a479b7443b9"`);
         await queryRunner.query(`ALTER TABLE "marvel"."tbl__character_series" DROP CONSTRAINT "FK_3127f6da1acbd96b78de333eb58"`);
         await queryRunner.query(`ALTER TABLE "marvel"."tbl__character_series" DROP CONSTRAINT "FK_9c783419b21ef905a3da367d709"`);
         await queryRunner.query(`ALTER TABLE "marvel"."tbl__url_event" DROP CONSTRAINT "FK_bab293a12daf4d51f54368d0159"`);
         await queryRunner.query(`ALTER TABLE "marvel"."tbl__url_event" DROP CONSTRAINT "FK_8c6394214f4371a55f229bacb97"`);
-        await queryRunner.query(`ALTER TABLE "marvel"."tbl__event" DROP CONSTRAINT "FK_ee907e285ddecf297f3880b9a7b"`);
-        await queryRunner.query(`ALTER TABLE "marvel"."tbl__event" DROP CONSTRAINT "FK_002cdba1a4930cdb5ebc7e3a6ed"`);
+        await queryRunner.query(`ALTER TABLE "marvel"."tbl__event" DROP CONSTRAINT "FK_130fc426b8d250fe8ecd41878c6"`);
+        await queryRunner.query(`ALTER TABLE "marvel"."tbl__event" DROP CONSTRAINT "FK_2eafd7e99df7d09c9e2764b6937"`);
         await queryRunner.query(`ALTER TABLE "marvel"."tbl__character_events" DROP CONSTRAINT "FK_aa35bc520e464c6870cfddc8d81"`);
         await queryRunner.query(`ALTER TABLE "marvel"."tbl__character_events" DROP CONSTRAINT "FK_532eac0dd02133882946d5a1924"`);
         await queryRunner.query(`ALTER TABLE "marvel"."tbl__url_character" DROP CONSTRAINT "FK_5e2651cb2c296aa5bc7f33f3a8c"`);
