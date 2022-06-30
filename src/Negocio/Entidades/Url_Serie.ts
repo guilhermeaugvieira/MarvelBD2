@@ -1,24 +1,24 @@
 import { Entity, ManyToOne, Column, CreateDateColumn, UpdateDateColumn} from "typeorm"
-import { Character } from "./Character"
-import { Event } from "./Event"
+import { Serie } from "./Serie"
+import { Url } from "./Url"
 
-@Entity({name: 'character_events', schema: 'marvel'})
-export class Character_Events{
+@Entity({name: 'url_serie', schema: 'marvel'})
+export class Url_Serie{
 
   @Column({primary: true})
   id: string
 
-  @ManyToOne(() => Character, character => character.events,{
+  @ManyToOne(() => Serie, serie => serie.urls, {
     onDelete: "NO ACTION",
-    onUpdate: "CASCADE"
+    onUpdate: "CASCADE",
   })
-  character: Character
+  serie: Serie
 
-  @ManyToOne(() => Event, event => event.characters,{
+  @ManyToOne(() => Url, url => url.series, {
     onDelete: "NO ACTION",
     onUpdate: "CASCADE"
   })
-  event: Event
+  url: Url
 
   @CreateDateColumn({nullable: false})
   created_at?: Date

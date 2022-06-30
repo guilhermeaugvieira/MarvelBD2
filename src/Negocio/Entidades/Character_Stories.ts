@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, Column} from "typeorm"
+import { Entity, ManyToOne, Column, CreateDateColumn, UpdateDateColumn} from "typeorm"
 import { Character } from "./Character"
 import { Story } from "./Story"
 
@@ -19,4 +19,10 @@ export class Character_Stories{
     onUpdate: "CASCADE"
   })
   story: Story
+
+  @CreateDateColumn({nullable: false})
+  created_at?: Date
+
+  @UpdateDateColumn({nullable: false})
+  updated_at?: Date
 }

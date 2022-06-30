@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, Column} from "typeorm"
+import { Entity, ManyToOne, Column, CreateDateColumn, UpdateDateColumn} from "typeorm"
 import { Character } from "./Character"
 import { Comic } from "./Comic"
 
@@ -10,7 +10,7 @@ export class Character_Comics{
 
   @ManyToOne(() => Character, character => character.comics, {
     onDelete: "NO ACTION",
-    onUpdate: "CASCADE"
+    onUpdate: "CASCADE",
   })
   character: Character
 
@@ -19,4 +19,10 @@ export class Character_Comics{
     onUpdate: "CASCADE"
   })
   comic: Comic
+
+  @CreateDateColumn({nullable: false})
+  created_at?: Date
+
+  @UpdateDateColumn({nullable: false})
+  updated_at?: Date
 }

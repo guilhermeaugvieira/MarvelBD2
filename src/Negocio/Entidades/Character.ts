@@ -1,14 +1,13 @@
-import { Entity, Column, OneToMany, OneToOne, JoinColumn } from "typeorm"
+import { Entity, Column, OneToMany, OneToOne, JoinColumn, CreateDateColumn, UpdateDateColumn} from "typeorm"
 import { Url } from "./Url"
-import { Image } from "./Image"
-import { Serie } from "./Serie"
 import { Character_Comics } from "./Character_Comics"
 import { Character_Stories } from "./Character_Stories"
 import { Character_Events } from "./Character_Events"
 import { Character_Series } from "./Character_Series"
+import { Url_Character } from "./Url_Character"
 
 @Entity({name: 'character', schema: 'marvel'})
-export class Character {
+export class Character{
 
     @Column({primary: true})
     id: number
@@ -19,21 +18,17 @@ export class Character {
     @Column({nullable: true})
     description: string
 
+    @Column({nullable: true})
+    modified?: Date
+
+    @Column({nullable: false, name: 'resource_uri'})
+    resourceUri: string
+
+    @OneToMany(() => Url_Character, urlCharacter => urlCharacter.character)
+    urls: Url_Character[]
+    
     @Column({nullable: false})
-    modified: Date
-
-    @Column({nullable: false})
-    resourceURI: string
-
-    @OneToMany(() => Url, url => url.character)
-    urls: Url[]
-
-    @OneToOne(() => Image, {
-      onDelete: "NO ACTION",
-      onUpdate: "CASCADE",
-    })
-    @JoinColumn()
-    thumbnail: Image
+    thumbnail: string
 
     @OneToMany(() => Character_Comics, character_comics => character_comics.character)
     comics: Character_Comics[]
@@ -46,4 +41,10 @@ export class Character {
 
     @OneToMany(() => Character_Series, character_series => character_series.character)
     series: Character_Series[]
+
+    @CreateDateColumn({nullable: false})
+    created_at?: Date
+  
+    @UpdateDateColumn({nullable: false})
+    updated_at?: Date
 }
