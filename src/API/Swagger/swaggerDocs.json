@@ -2,15 +2,15 @@
   "swagger": "2.0",
   "info": {
     "version": "1.0.0",
-    "title": "API Sistema de Empréstimos",
-    "description": "Documentação da API do Sistema de Empréstimos"
+    "title": "API Marvel",
+    "description": "Documentação da API da Marvel - BD2"
   },
   "host": "localhost:3000",
   "basePath": "/api",
   "tags": [
     {
-      "name": "Carga",
-      "description": "Carga online do banco de dados"
+      "name": "JMeter",
+      "description": "Somente para testes do JMeter"
     }
   ],
   "schemes": [
@@ -31,19 +31,26 @@
     "application/json"
   ],
   "paths": {
-    "/carga": {
-      "post": {
+    "/jmeter/{limit}": {
+      "get": {
         "tags": [
-          "Carga"
+          "JMeter"
         ],
-        "summary": "Aplica a carga no banco de dados de todas as entidades associadas",
-        "description": "Retorna o status de aplicação da carga geral",
-        "parameters": [],
+        "summary": "Aplica o teste do JMeter",
+        "description": "Estressa com request carregado de entidades",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Ok",
             "schema": {
-              "$ref": "#/definitions/RespostaCarga"
+              "$ref": "#/definitions/RespostaJMeter"
             }
           }
         }
@@ -57,6 +64,19 @@
         "Status": {
           "type": "string",
           "example": "Carga feita com sucesso"
+        }
+      }
+    },
+    "RespostaJMeter": {
+      "type": "object",
+      "properties": {
+        "Status": {
+          "type": "string",
+          "example": "Banco estressado com sucesso"
+        },
+        "Data": {
+          "type": "string",
+          "example": "Objeto com todos os dados"
         }
       }
     }
