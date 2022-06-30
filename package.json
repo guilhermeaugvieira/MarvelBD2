@@ -36,16 +36,6 @@
    "scripts": {
       "start": "ts-node-dev --inspect -- src/API/index.ts",
       "typeorm": "typeorm-ts-node-commonjs -d ./src/Dados/Data-Source.ts",
-      "gen-doc": "node src/API/Swagger/generate.js",
-      "json-db:characters": "json-server --watch ./src/Dados/Cache/characterDb.json  --port 3001",
-      "json-db:comics": "json-server --watch ./src/Dados/Cache/comicDb.json  --port 3002",
-      "json-db:events": "json-server --watch ./src/Dados/Cache/eventDb.json  --port 3003",
-      "json-db:series": "json-server --watch ./src/Dados/Cache/serieDb.json  --port 3004",
-      "json-db:stories": "json-server --watch ./src/Dados/Cache/storyDb.json  --port 3005",
-      "json-db:stories2": "json-server --watch ./src/Dados/Cache/storyDbPt2.json  --port 3006",
-      "json-db:stories3": "json-server --watch ./src/Dados/Cache/storyDbPt3.json  --port 3007",
-      "json-db:stories4": "json-server --watch ./src/Dados/Cache/storyDbPt4.json  --port 3008",
-      "json-db:stories5": "json-server --watch ./src/Dados/Cache/storyDbPt5.json  --port 3009",
-      "json-db:stories6": "json-server --watch ./src/Dados/Cache/storyDbPt6.json  --port 3010"
+      "gen-doc": "node src/API/Swagger/generate.js"
    }
 }
