@@ -11,31 +11,19 @@ class JMeterService implements IJMeterService{
       take: limit,
       relationLoadStrategy: "query",
       relations: {
-        urls: {
-          url: true,
-        },
         comics: {
           comic: {
             creators: {
               creator: true,
             },
-            urls: {
-              url: true,
-            }
           }
         },
         events: {
           event: {
-            urls: {
-              url: true,
-            }
           }
         },
         series: {
           serie: {
-            urls: {
-              url: true,
-            }
           }
         },
         stories: {
@@ -46,12 +34,6 @@ class JMeterService implements IJMeterService{
         name: true,
         description: true,
         id: true,
-        urls: {
-          url: {
-            type: true,
-            url: true,
-          },
-        },
         comics: {
           comic: {
             title: true,
@@ -63,12 +45,6 @@ class JMeterService implements IJMeterService{
                 id: true,
               }
             },
-            urls: {
-              url: {
-                type: true,
-                url: true,
-              },
-            },
           },
         },
         events: {
@@ -78,12 +54,6 @@ class JMeterService implements IJMeterService{
             description: true,
             start: true,
             end: true,
-            urls: {
-              url: {
-                type: true,
-                url: true,
-              }
-            }
           }
         },
         series: {
@@ -91,12 +61,6 @@ class JMeterService implements IJMeterService{
             title: true,
             id: true,
             description: true,
-            urls: {
-              url: {
-                type: true,
-                url: true,
-              },
-            },
           },
         },
         stories: {
