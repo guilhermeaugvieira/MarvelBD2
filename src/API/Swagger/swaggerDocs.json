@@ -9,6 +9,10 @@
   "basePath": "/api",
   "tags": [
     {
+      "name": "Carga",
+      "description": "Carga online do banco de dados"
+    },
+    {
       "name": "JMeter",
       "description": "Somente para testes do JMeter"
     }
@@ -31,6 +35,24 @@
     "application/json"
   ],
   "paths": {
+    "/carga": {
+      "post": {
+        "tags": [
+          "Carga"
+        ],
+        "summary": "Aplica a carga no banco de dados de todas as entidades associadas",
+        "description": "Retorna o status de aplicação da carga geral",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "schema": {
+              "$ref": "#/definitions/RespostaCarga"
+            }
+          }
+        }
+      }
+    },
     "/jmeter/{limit}": {
       "get": {
         "tags": [

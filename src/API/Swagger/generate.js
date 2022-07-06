@@ -14,10 +14,10 @@ const doc = {
   consumes: ['application/json'],
   produces: ['application/json'],
   tags: [
-    // {
-    //   name: "Carga",
-    //   description: "Carga online do banco de dados"
-    // },
+    {
+      name: "Carga",
+      description: "Carga online do banco de dados"
+    },
     {
       name: "JMeter",
       description: "Somente para testes do JMeter"

@@ -11,66 +11,19 @@ class JMeterService implements IJMeterService{
       take: limit,
       relationLoadStrategy: "query",
       relations: {
-        comics: {
-          comic: {
-            creators: {
-              creator: true,
-            },
-          }
-        },
-        events: {
-          event: {
-          }
-        },
-        series: {
-          serie: {
-          }
-        },
-        stories: {
-          story: true,
-        }
+        urls: { url: {}},
+        comics: {comic: {creators: {creator: {}}, urls: {url: {}}}},
+        events: {event: {urls: {url: {}}}},
+        series: {serie: {urls: {url: {}},}},
+        stories: {story: {}}
       },
       select: {
-        name: true,
-        description: true,
-        id: true,
-        comics: {
-          comic: {
-            title: true,
-            id: true,
-            description: true,
-            creators: {
-              creator: {
-                name: true,
-                id: true,
-              }
-            },
-          },
-        },
-        events: {
-          event: {
-            title: true,
-            id: true,
-            description: true,
-            start: true,
-            end: true,
-          }
-        },
-        series: {
-          serie: {
-            title: true,
-            id: true,
-            description: true,
-          },
-        },
-        stories: {
-          story: {
-            title: true,
-            id: true,
-            description: true,
-          }
-        }
-      },
+        urls: true,
+        comics: true,
+        events: true,
+        series: true,
+        stories: true,
+      }
     });
     
     return {

@@ -59,6 +59,7 @@ class CargaService implements ICargaService{
     const {data: dadosStories5 } = await axios.get<IMarvelStory[][]>('http://localhost:3009/stories');
     const {data: dadosStories6 } = await axios.get<IMarvelStory[][]>('http://localhost:3010/stories');
 
+
     this._charactersData.push(...dadosCharacters.flat(1));
     this._comicData.push(...dadosComics.flat(1));
     this._eventData.push(...dadosEvents.flat(1));
@@ -417,9 +418,10 @@ class CargaService implements ICargaService{
       await transactionalEntityManager.getRepository(Url_Comic).save(relacoesQuadrinhoUrl);
 
       // quadrinhoAdicionado.urls = relacoesQuadrinhoUrl;
+      
+      quadrinhoAdicionado.creators = await this.verificarCreators(quadrinhoAdicionado.id, transactionalEntityManager);
     }
 
-    quadrinhoAdicionado.creators = await this.verificarCreators(quadrinhoAdicionado.id, transactionalEntityManager);
 
     return quadrinhoAdicionado;
   }
