@@ -6,9 +6,11 @@ import { EntityManager} from 'typeorm';
 import { AppDataSource } from '../../Dados/Data-Source';
 import { Character } from '../../Negocio/Entidades/Character';
 import { ICargaService } from '../Interfaces/ICargaService';
-import { IMarvelCharacter, IMarvelCharactersResponse, IMarvelComicResponse, IMarvelEventResponse, IMarvelSeriesResponse, IMarvelStoryResponse, IMarvelEventSummary, IMarvelComic, IMarvelEvent, IMarvelSeries, IMarvelStory } from '../Responses/IMarvelResponse';
+import { IMarvelCharacter, IMarvelCharactersResponse, IMarvelComicResponse, 
+  IMarvelEventResponse, IMarvelSeriesResponse, IMarvelStoryResponse, 
+  IMarvelComic, IMarvelEvent, IMarvelSeries, IMarvelStory } 
+from '../Responses/IMarvelResponse';
 import { Url } from '../../Negocio/Entidades/Url';
-import { IChargeResponse } from '../Responses/IChargeResponse';
 import { Character_Comics } from '../../Negocio/Entidades/Character_Comics';
 import { Comic } from '../../Negocio/Entidades/Comic';
 import { Character_Events } from '../../Negocio/Entidades/Character_Events';
@@ -58,6 +60,7 @@ class CargaService implements ICargaService{
     const {data: dadosStories4 } = await axios.get<IMarvelStory[][]>('http://localhost:3008/stories');
     const {data: dadosStories5 } = await axios.get<IMarvelStory[][]>('http://localhost:3009/stories');
     const {data: dadosStories6 } = await axios.get<IMarvelStory[][]>('http://localhost:3010/stories');
+
 
     this._charactersData.push(...dadosCharacters.flat(1));
     this._comicData.push(...dadosComics.flat(1));
@@ -417,9 +420,10 @@ class CargaService implements ICargaService{
       await transactionalEntityManager.getRepository(Url_Comic).save(relacoesQuadrinhoUrl);
 
       // quadrinhoAdicionado.urls = relacoesQuadrinhoUrl;
+      
+      quadrinhoAdicionado.creators = await this.verificarCreators(quadrinhoAdicionado.id, transactionalEntityManager);
     }
 
-    quadrinhoAdicionado.creators = await this.verificarCreators(quadrinhoAdicionado.id, transactionalEntityManager);
 
     return quadrinhoAdicionado;
   }
@@ -796,40 +800,6 @@ class CargaService implements ICargaService{
 
     return characterStories;
     
-  }
-
-  private converterResultados(personagens: Character[]): IChargeResponse[]{
-    let response: IChargeResponse[] = new Array<IChargeResponse>();
-
-    personagens.forEach(personagem => {
-      response.push({
-        id: personagem.id,
-        description: personagem.description,
-        modified: personagem.modified,
-        name: personagem.name,
-        resourceURI: personagem.resourceUri,
-        thumbnail: personagem.thumbnail,
-        stories: personagem.stories ? personagem.stories.map(story => ({
-          id: story.story.id,
-          resourceUri: story.story.resourceUri,
-          type: story.story.type
-        })) : [],
-        events: personagem.events ? personagem.events.map(event => ({
-          id: event.event.id,
-          resourceUri: event.event.resourceUri
-        })) : [],
-        comics: personagem.comics ? personagem.comics.map(comic => ({
-          id: comic.comic.id,
-          resourceURI: comic.comic.resourceUri
-        })) : [],
-        series: personagem.series ? personagem.series.map(serie => ({
-          id: serie.serie.id,
-          resourceUri: serie.serie.resourceUri
-        })) : []
-      })
-    });
-
-    return response;
   }
 
   private async obterPersonagemBaseDeDados(personagem: IMarvelCharacter, transactionalEntityManager: EntityManager){
