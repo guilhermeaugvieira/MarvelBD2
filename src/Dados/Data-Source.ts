@@ -9,7 +9,7 @@ export const AppDataSource = new DataSource({
     password: "PostgresBD2",
     database: "marvel",
     synchronize: false,
-    logging: ["error"],
+    logging: ["query", "error"],
     logger: "advanced-console",
     entities: [
         "src/Negocio/Entidades/**/*.{ts, js}"

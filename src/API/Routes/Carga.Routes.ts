@@ -20,8 +20,7 @@ rotasCarga.post("/carga",
     }
   */
 
-  cargaController.carga
-);
+  cargaController.carga);
 
 rotasCarga.use(errors());
 

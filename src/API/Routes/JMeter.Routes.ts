@@ -30,8 +30,7 @@ rotasJMeter.get("/jmeter/:limit",
     }
   ),
 
-  jMeterController.teste
-);
+  jMeterController.teste);
 
 rotasJMeter.use(errors());
 

@@ -11,14 +11,14 @@ class JMeterService implements IJMeterService{
       take: limit,
       relationLoadStrategy: "query",
       relations: {
-        // urls: { url: {}},
-        comics: {comic: {creators: {creator: {}}}},
-        events: {event: {}},
-        series: {serie: {}},
+        urls: { url: {}},
+        comics: {comic: {creators: {creator: {}}, urls: {url: {}}}},
+        events: {event: {urls: {url: {}}}},
+        series: {serie: {urls: {url: {}},}},
         stories: {story: {}}
       },
       select: {
-        // urls: true,
+        urls: true,
         comics: true,
         events: true,
         series: true,
