@@ -15,19 +15,15 @@
     {
       "name": "JMeter",
       "description": "Somente para testes do JMeter"
+    },
+    {
+      "name": "Dados",
+      "description": "Obtenção dos dados registrados na base de dados"
     }
   ],
   "schemes": [
     "http"
   ],
-  "securityDefinitions": {
-    "apiKeyAuth": {
-      "type": "apiKey",
-      "in": "header",
-      "name": "authorization",
-      "description": "Insira o token seguido de 'Bearer '"
-    }
-  },
   "consumes": [
     "application/json"
   ],
@@ -48,6 +44,311 @@
             "description": "Ok",
             "schema": {
               "$ref": "#/definitions/RespostaCarga"
+            }
+          }
+        }
+      }
+    },
+    "/dados/personagens": {
+      "get": {
+        "tags": [
+          "Dados"
+        ],
+        "summary": "Obtem os dados dos personagens de forma paginada",
+        "description": "Retorna os dados dos personagens e todos os dados associados",
+        "parameters": [
+          {
+            "name": "id_personagem",
+            "in": "query",
+            "description": "Id do personagem procurado",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nome_personagem",
+            "in": "query",
+            "description": "Parte do nome do personagem procurado",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nome_quadrinho",
+            "in": "query",
+            "description": "Parte do nome do quadrinho que o personagem faz parte",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nome_evento",
+            "in": "query",
+            "description": "Parte do nome do evento que o personagem faz parte",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nome_serie",
+            "in": "query",
+            "description": "Parte do nome da serie que o personagem faz parte",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nome_historia",
+            "in": "query",
+            "description": "Parte do nome da história que o personagem faz parte",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "numero_pagina",
+            "in": "query",
+            "description": "Número da página procurada",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "total_resultados",
+            "in": "query",
+            "description": "Quantidade de resultados esperados",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "schema": {
+              "$ref": "#/definitions/RespostaPersonagens"
+            }
+          }
+        }
+      }
+    },
+    "/dados/eventos": {
+      "get": {
+        "tags": [
+          "Dados"
+        ],
+        "summary": "Obtem os dados dos eventos de forma paginada",
+        "description": "Retorna os dados dos eventos e todos os dados associados",
+        "parameters": [
+          {
+            "name": "id_evento",
+            "in": "query",
+            "description": "Id do evento procurado",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nome_evento",
+            "in": "query",
+            "description": "Parte do nome do evento procurado",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nome_personagem",
+            "in": "query",
+            "description": "Parte do nome do personagem que faz parte do evento",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "numero_pagina",
+            "in": "query",
+            "description": "Número da página procurada",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "total_resultados",
+            "in": "query",
+            "description": "Quantidade de resultados esperados",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "schema": {
+              "$ref": "#/definitions/RespostaEventos"
+            }
+          }
+        }
+      }
+    },
+    "/dados/quadrinhos": {
+      "get": {
+        "tags": [
+          "Dados"
+        ],
+        "summary": "Obtem os dados dos quadrinhos de forma paginada",
+        "description": "Retorna os dados dos quadrinhos e todos os dados associados",
+        "parameters": [
+          {
+            "name": "id_quadrinho",
+            "in": "query",
+            "description": "Id do quadrinho procurado",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nome_quadrinho",
+            "in": "query",
+            "description": "Parte do nome do quadrinho procurado",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nome_personagem",
+            "in": "query",
+            "description": "Parte do nome do personagem que faz parte do quadrinho",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nome_criador",
+            "in": "query",
+            "description": "Parte do nome do criador do quadrinho",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "numero_pagina",
+            "in": "query",
+            "description": "Número da página procurada",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "total_resultados",
+            "in": "query",
+            "description": "Quantidade de resultados esperados",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "schema": {
+              "$ref": "#/definitions/RespostaQuadrinhos"
+            }
+          }
+        }
+      }
+    },
+    "/dados/series": {
+      "get": {
+        "tags": [
+          "Dados"
+        ],
+        "summary": "Obtem os dados das series de forma paginada",
+        "description": "Retorna os dados das series e todos os dados associados",
+        "parameters": [
+          {
+            "name": "id_serie",
+            "in": "query",
+            "description": "Id da série procurada",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nome_serie",
+            "in": "query",
+            "description": "Parte do nome da série procurado",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nome_personagem",
+            "in": "query",
+            "description": "Parte do nome do personagem que faz parte da série",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "numero_pagina",
+            "in": "query",
+            "description": "Número da página procurada",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "total_resultados",
+            "in": "query",
+            "description": "Quantidade de resultados esperados",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "schema": {
+              "$ref": "#/definitions/RespostaSeries"
+            }
+          }
+        }
+      }
+    },
+    "/dados/historias": {
+      "get": {
+        "tags": [
+          "Dados"
+        ],
+        "summary": "Obtem os dados das storias de forma paginada",
+        "description": "Retorna os dados das storias e todos os dados associados",
+        "parameters": [
+          {
+            "name": "id_historia",
+            "in": "query",
+            "description": "Id da história procurado",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nome_historia",
+            "in": "query",
+            "description": "Parte do nome da história procurado",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nome_personagem",
+            "in": "query",
+            "description": "Parte do nome do personagem que faz parte da história",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nome_quadrinho",
+            "in": "query",
+            "description": "Parte do nome do quadrinho que originou a história",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "numero_pagina",
+            "in": "query",
+            "description": "Número da página procurada",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "total_resultados",
+            "in": "query",
+            "description": "Quantidade de resultados esperados",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "schema": {
+              "$ref": "#/definitions/RespostaStorias"
             }
           }
         }
@@ -99,6 +400,904 @@
         "Data": {
           "type": "string",
           "example": "Objeto com todos os dados"
+        }
+      }
+    },
+    "RespostaPersonagens": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "number",
+          "example": 1
+        },
+        "totalPages": {
+          "type": "number",
+          "example": 4
+        },
+        "totalResults": {
+          "type": "number",
+          "example": 800
+        },
+        "limit": {
+          "type": "number",
+          "example": 20
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number",
+                "example": 1
+              },
+              "name": {
+                "type": "string",
+                "example": "string"
+              },
+              "description": {
+                "type": "string",
+                "example": "string"
+              },
+              "modified": {
+                "type": "string",
+                "example": "2022-07-10T22:19:56.414Z"
+              },
+              "resourceUri": {
+                "type": "string",
+                "example": "string"
+              },
+              "thumbnail": {
+                "type": "string",
+                "example": "string"
+              },
+              "comics": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "resourceUri": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "digitalId": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "title": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "issueNumber": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "variantDescription": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "modified": {
+                      "type": "string",
+                      "example": "2022-07-10T22:19:56.414Z"
+                    },
+                    "isbn": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "upc": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "diamondCode": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "ean": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "issn": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "format": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "pageCount": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "thumbnail": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "creators": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number",
+                            "example": 1
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "string"
+                          },
+                          "resourceUri": {
+                            "type": "string",
+                            "example": "string"
+                          },
+                          "role": {
+                            "type": "string",
+                            "example": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "events": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "resourceUri": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "title": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "modified": {
+                      "type": "string",
+                      "example": "2022-07-10T22:19:56.414Z"
+                    },
+                    "start": {
+                      "type": "string",
+                      "example": "2022-07-10T22:19:56.414Z"
+                    },
+                    "end": {
+                      "type": "string",
+                      "example": "2022-07-10T22:19:56.414Z"
+                    }
+                  }
+                }
+              },
+              "series": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "resourceUri": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "title": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "startYear": {
+                      "type": "number",
+                      "example": 1999
+                    },
+                    "endYear": {
+                      "type": "number",
+                      "example": 1999
+                    },
+                    "modified": {
+                      "type": "string",
+                      "example": "2022-07-10T22:19:56.414Z"
+                    }
+                  }
+                }
+              },
+              "stories": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "resourceUri": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "title": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "modified": {
+                      "type": "string",
+                      "example": "2022-07-10T22:19:56.414Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "RespostaQuadrinhos": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "number",
+          "example": 1
+        },
+        "totalPages": {
+          "type": "number",
+          "example": 4
+        },
+        "totalResults": {
+          "type": "number",
+          "example": 800
+        },
+        "limit": {
+          "type": "number",
+          "example": 20
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number",
+                "example": 1
+              },
+              "resourceUri": {
+                "type": "string",
+                "example": "string"
+              },
+              "digitalId": {
+                "type": "number",
+                "example": 1
+              },
+              "title": {
+                "type": "string",
+                "example": "string"
+              },
+              "issueNumber": {
+                "type": "number",
+                "example": 1
+              },
+              "variantDescription": {
+                "type": "string",
+                "example": "string"
+              },
+              "description": {
+                "type": "string",
+                "example": "string"
+              },
+              "modified": {
+                "type": "string",
+                "example": "2022-07-10T22:19:56.414Z"
+              },
+              "isbn": {
+                "type": "string",
+                "example": "string"
+              },
+              "upc": {
+                "type": "string",
+                "example": "string"
+              },
+              "diamondCode": {
+                "type": "string",
+                "example": "string"
+              },
+              "ean": {
+                "type": "string",
+                "example": "string"
+              },
+              "issn": {
+                "type": "string",
+                "example": "string"
+              },
+              "format": {
+                "type": "string",
+                "example": "string"
+              },
+              "pageCount": {
+                "type": "number",
+                "example": 1
+              },
+              "thumbnail": {
+                "type": "string",
+                "example": "string"
+              },
+              "characters": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "modified": {
+                      "type": "string",
+                      "example": "2022-07-10T22:19:56.414Z"
+                    },
+                    "resourceUri": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "thumbnail": {
+                      "type": "string",
+                      "example": "string"
+                    }
+                  }
+                }
+              },
+              "creators": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "resourceUri": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "role": {
+                      "type": "string",
+                      "example": "string"
+                    }
+                  }
+                }
+              },
+              "stories": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "resourceUri": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "title": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "modified": {
+                      "type": "string",
+                      "example": "2022-07-10T22:19:56.414Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "RespostaEventos": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "number",
+          "example": 1
+        },
+        "totalPages": {
+          "type": "number",
+          "example": 4
+        },
+        "totalResults": {
+          "type": "number",
+          "example": 800
+        },
+        "limit": {
+          "type": "number",
+          "example": 20
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number",
+                "example": 1
+              },
+              "resourceUri": {
+                "type": "string",
+                "example": "string"
+              },
+              "title": {
+                "type": "string",
+                "example": "string"
+              },
+              "description": {
+                "type": "string",
+                "example": "string"
+              },
+              "modified": {
+                "type": "string",
+                "example": "2022-07-10T22:19:56.414Z"
+              },
+              "start": {
+                "type": "string",
+                "example": "2022-07-10T22:19:56.414Z"
+              },
+              "end": {
+                "type": "string",
+                "example": "2022-07-10T22:19:56.414Z"
+              },
+              "characters": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "modified": {
+                      "type": "string",
+                      "example": "2022-07-10T22:19:56.414Z"
+                    },
+                    "resourceUri": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "thumbnail": {
+                      "type": "string",
+                      "example": "string"
+                    }
+                  }
+                }
+              },
+              "nextEvent": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "resourceUri": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "modified": {
+                    "type": "string",
+                    "example": "2022-07-10T22:19:56.414Z"
+                  },
+                  "start": {
+                    "type": "string",
+                    "example": "2022-07-10T22:19:56.414Z"
+                  },
+                  "end": {
+                    "type": "string",
+                    "example": "2022-07-10T22:19:56.414Z"
+                  }
+                }
+              },
+              "previousEvent": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "resourceUri": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "modified": {
+                    "type": "string",
+                    "example": "2022-07-10T22:19:56.414Z"
+                  },
+                  "start": {
+                    "type": "string",
+                    "example": "2022-07-10T22:19:56.414Z"
+                  },
+                  "end": {
+                    "type": "string",
+                    "example": "2022-07-10T22:19:56.414Z"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "RespostaSeries": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "number",
+          "example": 1
+        },
+        "totalPages": {
+          "type": "number",
+          "example": 4
+        },
+        "totalResults": {
+          "type": "number",
+          "example": 800
+        },
+        "limit": {
+          "type": "number",
+          "example": 20
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number",
+                "example": 1
+              },
+              "resourceUri": {
+                "type": "string",
+                "example": "string"
+              },
+              "title": {
+                "type": "string",
+                "example": "string"
+              },
+              "description": {
+                "type": "string",
+                "example": "string"
+              },
+              "startYear": {
+                "type": "number",
+                "example": 1999
+              },
+              "endYear": {
+                "type": "number",
+                "example": 1999
+              },
+              "modified": {
+                "type": "string",
+                "example": "2022-07-10T22:19:56.414Z"
+              },
+              "characters": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "modified": {
+                      "type": "string",
+                      "example": "2022-07-10T22:19:56.414Z"
+                    },
+                    "resourceUri": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "thumbnail": {
+                      "type": "string",
+                      "example": "string"
+                    }
+                  }
+                }
+              },
+              "nextSerie": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "resourceUri": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "startYear": {
+                    "type": "number",
+                    "example": 1999
+                  },
+                  "endYear": {
+                    "type": "number",
+                    "example": 1999
+                  },
+                  "modified": {
+                    "type": "string",
+                    "example": "2022-07-10T22:19:56.414Z"
+                  }
+                }
+              },
+              "previousSerie": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "resourceUri": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "startYear": {
+                    "type": "number",
+                    "example": 1999
+                  },
+                  "endYear": {
+                    "type": "number",
+                    "example": 1999
+                  },
+                  "modified": {
+                    "type": "string",
+                    "example": "2022-07-10T22:19:56.414Z"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "RespostaStories": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "number",
+          "example": 1
+        },
+        "totalPages": {
+          "type": "number",
+          "example": 4
+        },
+        "totalResults": {
+          "type": "number",
+          "example": 800
+        },
+        "limit": {
+          "type": "number",
+          "example": 20
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number",
+                "example": 1
+              },
+              "type": {
+                "type": "string",
+                "example": "string"
+              },
+              "resourceUri": {
+                "type": "string",
+                "example": "string"
+              },
+              "title": {
+                "type": "string",
+                "example": "string"
+              },
+              "description": {
+                "type": "string",
+                "example": "string"
+              },
+              "modified": {
+                "type": "string",
+                "example": "2022-07-10T22:19:56.414Z"
+              },
+              "characters": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "modified": {
+                      "type": "string",
+                      "example": "2022-07-10T22:19:56.414Z"
+                    },
+                    "resourceUri": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "thumbnail": {
+                      "type": "string",
+                      "example": "string"
+                    }
+                  }
+                }
+              },
+              "originalIssue": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "resourceUri": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "digitalId": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "issueNumber": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "variantDescription": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "modified": {
+                    "type": "string",
+                    "example": "2022-07-10T22:19:56.414Z"
+                  },
+                  "isbn": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "upc": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "diamondCode": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "ean": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "issn": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "pageCount": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "thumbnail": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
