@@ -47,15 +47,15 @@ npm run start
 - Após a execução, todos os recursos necessários estarão disponíveis para o uso, a aplicação ficará disponível após a mensagem `Api rodando na porta 3000`
 
 ## Recursos Utilizados para o desenvolvimento da aplicação backend
-- [Express](https://www.npmjs.com/package/express)
-- [Celebrate](https://www.npmjs.com/package/celebrate)
-- [Typescript](https://www.npmjs.com/package/typescript)
-- [Json-Server](https://www.npmjs.com/package/json-server)
-- [TypeORM](https://www.npmjs.com/package/typeorm)
-- [Axios](https://www.npmjs.com/package/axios)
-- [Swagger](https://www.npmjs.com/package/swagger-ui-express)
-- [Node JS](https://nodejs.org/en/)
-- [PostgreSql](https://www.postgresql.org/)
+- [Express](https://www.npmjs.com/package/express) - Criação do Servidor
+- [Celebrate](https://www.npmjs.com/package/celebrate) - Validador de Rotas
+- [Typescript](https://www.npmjs.com/package/typescript) - Desenvolvimento da aplicação no geral
+- [Json-Server](https://www.npmjs.com/package/json-server) - Servidor de cache para os dados obtidos da api da Marvel
+- [TypeORM](https://www.npmjs.com/package/typeorm) - Orm utilizado para mapeamento das tabelas e relacionamentos do banco de dados
+- [Axios](https://www.npmjs.com/package/axios) - Requisição feitas para api da marvel
+- [Swagger](https://www.npmjs.com/package/swagger-ui-express) - Documentação dos endpoints
+- [Node JS](https://nodejs.org/en/) - Runtime
+- [PostgreSql](https://www.postgresql.org/) - Base de Dados
 
 ## Front-End da Aplicação
 - [Front-End](https://github.com/rldrodrigo/bd2-marvel-api) desenvolvido para utilizar os recursos do backend 
