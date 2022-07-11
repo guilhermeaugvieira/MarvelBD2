@@ -10,7 +10,7 @@ O projeto é uma abstração da base de dados da [Marvel](https://developer.marv
 
 ## Configuração do projeto
 - Inicie pelo arquivo Data-Source, presente em src/Dados/Data-Source.ts, configure o acesso a seu banco de dados por ali
-- Em src/API/Environment há um arquivo chamado .env.example, renomeio o mesmo para somente .env preenchendo a chave pública e privada que obteve da api da marvel
+- Em src/API/Environment há um arquivo chamado .env.example, renomeio o mesmo para somente .env, preenchendo a chave pública e privada que obteve da api da marvel
 - Baixe os pacotes necessários utilizando o comando `npm i`
 
 ## Criação da base de dados
