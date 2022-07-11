@@ -44,7 +44,7 @@ Para a utilização da aplicação backend, foi disponibilizada uma documentaç�
 ```sh
 npm run start
 ```
-- Após a execução, todos os recursos necessários estarão disponíveis para o uso, a aplicação ficará disponível após a mensagem `Api rodando na porta 3000`
+- Após a execução, todos os recursos necessários estarão disponíveis para o uso, a aplicação ficará disponível após a mensagem `Api rodando na porta 3000` ser apresentada
 
 ## Recursos Utilizados para o desenvolvimento da aplicação backend
 - [Express](https://www.npmjs.com/package/express) - Criação do Servidor
