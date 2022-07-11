@@ -65,8 +65,8 @@ class DadosController{
       numeroPagina: requisicao.query.numero_pagina ? parseInt(requisicao.query.numero_pagina.toString()) : 1,
       totalResultados: +requisicao.query.total_resultados,
       nomePersonagem: requisicao.query.nome_personagem?.toString() || null,
-      nomeHistoria: requisicao.query.nome_historia.toString() || null,
-      nomeQuadrinho: requisicao.query.nomeQuadrinho.toString() || null,
+      nomeHistoria: requisicao.query.nome_historia?.toString() || null,
+      nomeQuadrinho: requisicao.query.nomeQuadrinho?.toString() || null,
     }
     
     return resposta.json(await this._dadosService.obterStories(filtro));

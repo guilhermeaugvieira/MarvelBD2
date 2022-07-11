@@ -1,4 +1,4 @@
-import { MoreThanOrEqual, ILike,  } from 'typeorm';
+import { MoreThanOrEqual, ILike, IsNull,   } from 'typeorm';
 import { Lifecycle, scoped } from "tsyringe";
 import { AppDataSource } from "../../Dados/Data-Source";
 import { Character } from "../../Negocio/Entidades/Character";
@@ -39,26 +39,26 @@ class DadosService implements IDadosService{
       where: {
         id: filtro.idPersonagem ?? MoreThanOrEqual(1),
         name: filtro.nomePersonagem ? ILike(`%${filtro.nomePersonagem}%`) : ILike('%'),
-        comics: {
+        comics: filtro.nomeQuadrinho ? {
           comic: {
-            title: filtro.nomeQuadrinho ? ILike(`%${filtro.nomeQuadrinho}%`) : ILike('%'),
+            title: ILike(`%${filtro.nomeQuadrinho}%`),
           }
-        },
-        events: {
+        } : IsNull(),
+        events: filtro.nomeEvento ? {
           event: {
-            title: filtro.nomeEvento ? ILike(`%${filtro.nomeEvento}%`) : ILike('%'),
+            title: ILike(`%${filtro.nomeEvento}%`),
           }
-        },
-        series: {
+        } : IsNull(),
+        series: filtro.nomeSerie ? {
           serie: {
-            title: filtro.nomeSerie ? ILike(`%${filtro.nomeSerie}%`) : ILike('%'),
+            title: ILike(`%${filtro.nomeSerie}%`),
           }
-        },
-        stories: {
+        } : IsNull(),
+        stories: filtro.nomeHistoria ? {
           story: {
-            title: filtro.nomeHistoria ? ILike(`%${filtro.nomeHistoria}%`) : ILike('%'),
+            title: ILike(`%${filtro.nomeHistoria}%`),
           }
-        }
+        } : IsNull()
       }
     });
     
@@ -89,16 +89,16 @@ class DadosService implements IDadosService{
       where: {
         id: filtro.idQuadrinho ?? MoreThanOrEqual(1),
         title: filtro.nomeQuadrinho ? ILike(`%${filtro.nomeQuadrinho}%`) : ILike('%'),
-        characters: {
+        characters: filtro.nomePersonagem ? {
           character: {
-            name: filtro.nomePersonagem ? ILike(`%${filtro.nomePersonagem}%`) : ILike('%'),
+            name: ILike(`%${filtro.nomePersonagem}%`),
           }
-        },
-        creators: {
+        } : IsNull(),
+        creators: filtro.nomeCriador ? {
           creator: {
-            name: filtro.nomeCriador ? ILike(`%${filtro.nomeCriador}%`) : ILike('%'),
+            name:  ILike(`%${filtro.nomeCriador}%`),
           }
-        }
+        } : IsNull()
       }
     });
 
@@ -129,11 +129,11 @@ class DadosService implements IDadosService{
       where: {
         id: filtro.idEvento ?? MoreThanOrEqual(1),
         title: filtro.nomeEvento ? ILike(`%${filtro.nomeEvento}%`) : ILike('%'),
-        characters: {
+        characters: filtro.nomePersonagem ? {
           character: {
-            name: filtro.nomePersonagem ? ILike(`%${filtro.nomePersonagem}%`) : ILike('%'),
+            name: ILike(`%${filtro.nomePersonagem}%`),
           }
-        }
+        } : IsNull(),
       }
     });
 
@@ -164,11 +164,11 @@ class DadosService implements IDadosService{
       where: {
         id: filtro.idSerie ?? MoreThanOrEqual(1),
         title: filtro.nomeSerie ? ILike(`%${filtro.nomeSerie}%`) : ILike('%'),
-        characters: {
+        characters: filtro.nomePersonagem ? {
           character: {
-            name: filtro.nomePersonagem ? ILike(`%${filtro.nomePersonagem}%`) : ILike('%'),
+            name: ILike(`%${filtro.nomePersonagem}%`),
           }
-        }
+        } : IsNull(),
       }
     });
 
@@ -196,14 +196,14 @@ class DadosService implements IDadosService{
       where: {
         id: filtro.idHistoria ?? MoreThanOrEqual(1),
         title: filtro.nomeHistoria ? ILike(`%${filtro.nomeHistoria}%`) : ILike('%'),
-        characters: {
+        characters: filtro.nomePersonagem ? {
           character: {
-            name: filtro.nomePersonagem ? ILike(`%${filtro.nomePersonagem}%`) : ILike('%'),
+            name: ILike(`%${filtro.nomePersonagem}%`),
           }
-        },
-        originalIssue: {
-          title: filtro.nomeQuadrinho ? ILike(`%${filtro.nomeQuadrinho}%`) : ILike('%'),
-        }
+        } : IsNull(),
+        originalIssue: filtro.nomeQuadrinho ? {
+          title: ILike(`%${filtro.nomeQuadrinho}%`),
+        } : IsNull()
       }
     });
 
